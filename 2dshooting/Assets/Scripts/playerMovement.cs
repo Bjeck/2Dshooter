@@ -33,8 +33,9 @@ public class playerMovement : MonoBehaviour {
 	GameObject blockInstance;
 	bool isBlockSpawning = false;
 	float blockRotationSpeed = 20;
-	public int blocksLeft = 2;
+	public int blocksLeft = 1;
 	float blockAdder = 0;
+	public float blockThreshold = 10;
 
 	//Repeller
 	GameObject repeller;
@@ -110,14 +111,6 @@ public class playerMovement : MonoBehaviour {
 
 		bulletTimerText.text = "Bullet timer: " + bulletCountdown;
 
-		if (bulletCountdown <= 0) {
-			if(bulletList.Count > 0){
-				GameObject temp = bulletList[0].gameObject;
-				Destroy(temp);
-				bulletList.Remove(bulletList[0]);
-			}
-			bulletCountdown = 10f;
-		}
 
 		if (bullets > 0) {
 			canShoot = true;		
@@ -237,7 +230,7 @@ public class playerMovement : MonoBehaviour {
 
 // --------------- ACTIONS
 
-		if (blockAdder >= 5) {
+		if (blockAdder >= blockThreshold) {
 			blockAdder = 0;
 			blocksLeft++;
 		}
@@ -349,6 +342,7 @@ public class playerMovement : MonoBehaviour {
 
 		targeter = new Vector3 (0, 0, 0);
 		bulletList.Add(bullet);
+		bulletCountdown += 5;
 		//bulletCounter++;
 		blockAdder++;
 	}
