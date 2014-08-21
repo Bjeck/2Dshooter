@@ -27,7 +27,8 @@ public class playerMovement : MonoBehaviour {
 	bool canShoot = false;
 	public AudioSource shootSound;
 	public ParticleSystem shootEffect;
-	float bulletCountdown = 10;
+	timerScript timerS;
+
 
 	//blocks
 	GameObject blockInstance;
@@ -41,6 +42,8 @@ public class playerMovement : MonoBehaviour {
 	GameObject repeller;
 	bool repellerActive = false;
 	public AudioSource repellerSound;
+	float repellerCoolDown = 10;
+	Vector3 tPos;
 
 	//redirect
 	List<GameObject> bulletList = new List<GameObject> ();
@@ -55,12 +58,10 @@ public class playerMovement : MonoBehaviour {
 	public GameObject ballTextObj;
 	GameObject repellerTextObj;
 	GameObject redirectTextObj;
-	public GameObject bulletTimerObj;
 	TextMesh blocktext;
 	TextMesh balltext;
 	TextMesh repellertext;
 	TextMesh redirecttext;
-	TextMesh bulletTimerText;
 
 
 	// Use this for initialization
@@ -80,13 +81,12 @@ public class playerMovement : MonoBehaviour {
 		ballTextObj = GameObject.Find ("ballText");
 		repellerTextObj = GameObject.Find ("repellerText");
 		redirectTextObj = GameObject.Find ("redirectText");
-		bulletTimerObj = GameObject.Find ("bulletTimerText");
+		timerS = GameObject.Find ("bulletTimerText").GetComponent<timerScript> ();
 
 		blocktext = blockTextObj.GetComponent<TextMesh> ();
 		balltext = ballTextObj.GetComponent<TextMesh> ();
 		repellertext = repellerTextObj.GetComponent<TextMesh> ();
 		redirecttext = redirectTextObj.GetComponent<TextMesh> ();
-		bulletTimerText = bulletTimerObj.GetComponent<TextMesh> ();
 
 
 	}
@@ -107,9 +107,7 @@ public class playerMovement : MonoBehaviour {
 		bullets = bulletList.Count;
 		balltext.text = "Bullets: "+bullets;
 
-		bulletCountdown -= Time.deltaTime;
 
-		bulletTimerText.text = "Bullet timer: " + bulletCountdown;
 
 
 		if (bullets > 0) {
@@ -262,7 +260,7 @@ public class playerMovement : MonoBehaviour {
 
 			float scaler = Mathf.Clamp(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")),0.1f,1);
 
-			blockInstance.transform.localScale = new Vector3( 0.2f,scaler*1.5f, 1f);
+			blockInstance.transform.localScale = new Vector3( scaler*0.4f,scaler*2f, 1f);
 
 
 			if(Input.GetAxis ("LTrigger") == 0){
@@ -277,38 +275,43 @@ public class playerMovement : MonoBehaviour {
 		}
 
 		//REPELLER
-		if (Input.GetAxis ("Lbumper") > 0 && !repellerActive) {
+		if (Input.GetAxis ("Lbumper") > 0 && !repellerActive && repellerCoolDown > 1) { //SPAWN REPELLER
 			repellerActive = true;
 
 			if(repellerSound.isPlaying)
 				repellerSound.Stop ();
 
-			repellerSound.pitch = 1;
-			repellerSound.Play();
 			SpawnRepeller();
-			repeller.GetComponent<Animator> ().SetBool ("spawn", true);
-			Vector3 tPos = transform.position;
-			tPos.z = -1;
-			repeller.transform.position = tPos;
+
 		}
-		if (repellerActive) {
-			Vector3 tPos = transform.position;
-			tPos.z = -1;
-			repeller.transform.position = tPos;
+
+		if (repellerActive) { //ON REPELLER ACTIVE
+			Vector3 tPos2 = transform.position;
+			tPos2.z = -1;
+			repeller.transform.position = tPos2;
 			speed = 12;
+			repellerCoolDown -= Time.deltaTime;
+			if(repellerCoolDown <= 0){
+				DeSpawnRepeller();
+			}
 		}
 
-		if (Input.GetAxis ("Lbumper") < 1 && repellerActive) {
-			repeller.GetComponent<Animator> ().SetBool ("spawn", false);
-
-			//if(repellerSound.isPlaying)
-			//	repellerSound.Stop();
-
-			//repellerSound.pitch = 0.5f;
-			//repellerSound.Play();
-			repellerActive = false;
-			speed = 24;
+		if (Input.GetAxis ("Lbumper") < 1 && repellerActive) { //DESPAWN REPELLER
+			DeSpawnRepeller();
 		}
+
+		if (!repellerActive && repellerCoolDown < 10) { //ON REPELLER INACTIVE
+			repellerCoolDown += Time.deltaTime;
+		}
+
+		repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
+		Debug.Log (repellerCoolDown);
+		repellertext.text = "Repeller: " + repellerCoolDown;
+
+
+
+
+
 
 		//Redirect
 		if (Input.GetAxis ("Rbumper") > 0 && canRedirect) {
@@ -342,7 +345,7 @@ public class playerMovement : MonoBehaviour {
 
 		targeter = new Vector3 (0, 0, 0);
 		bulletList.Add(bullet);
-		bulletCountdown += 5;
+		timerS.bulletCountdown += 5;
 		//bulletCounter++;
 		blockAdder++;
 	}
@@ -366,6 +369,24 @@ public class playerMovement : MonoBehaviour {
 		Vector3 tPos = transform.position;
 		tPos.z = -1;
 		repeller.transform.position = tPos;
+
+		repellerSound.pitch = 1;
+		repellerSound.Play();
+		
+		repeller.GetComponent<Animator> ().SetBool ("spawn", true);
+
+	}
+
+	void DeSpawnRepeller(){
+		repeller.GetComponent<Animator> ().SetBool ("spawn", false);
+		
+		//if(repellerSound.isPlaying)
+		//	repellerSound.Stop();
+		
+		//repellerSound.pitch = 0.5f;
+		//repellerSound.Play();
+		repellerActive = false;
+		speed = 24;
 	}
 
 
