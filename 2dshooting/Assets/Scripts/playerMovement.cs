@@ -21,13 +21,14 @@ public class playerMovement : MonoBehaviour {
 	GameObject bullet;
 	Vector3 targeter;
 	bool isTargeting = false;
-	float bulletSpeed = 5;
+	public float bulletSpeed = 5;
 	int bullets = 0;
 	float bulletCounter = 0;
 	bool canShoot = false;
 	public AudioSource shootSound;
 	public ParticleSystem shootEffect;
 	timerScript timerS;
+	public float bulletCountdownAdder = 5;
 
 
 	//blocks
@@ -42,7 +43,8 @@ public class playerMovement : MonoBehaviour {
 	GameObject repeller;
 	bool repellerActive = false;
 	public AudioSource repellerSound;
-	float repellerCoolDown = 10;
+	public AudioClip repellerSoundClip;
+	public float repellerCoolDown = 10;
 	Vector3 tPos;
 
 	//redirect
@@ -92,7 +94,7 @@ public class playerMovement : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
 		//if(repeller != null)
 		//	Debug.Log (repeller);
@@ -260,7 +262,7 @@ public class playerMovement : MonoBehaviour {
 
 			float scaler = Mathf.Clamp(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")),0.1f,1);
 
-			blockInstance.transform.localScale = new Vector3( scaler*0.4f,scaler*2f, 1f);
+			blockInstance.transform.localScale = new Vector3( scaler*0.3f,scaler*2f, 1f);
 
 
 			if(Input.GetAxis ("LTrigger") == 0){
@@ -278,8 +280,8 @@ public class playerMovement : MonoBehaviour {
 		if (Input.GetAxis ("Lbumper") > 0 && !repellerActive && repellerCoolDown > 1) { //SPAWN REPELLER
 			repellerActive = true;
 
-			if(repellerSound.isPlaying)
-				repellerSound.Stop ();
+			//if(repellerSound.isPlaying)
+			//	repellerSound.Stop ();
 
 			SpawnRepeller();
 
@@ -302,12 +304,12 @@ public class playerMovement : MonoBehaviour {
 
 		if (!repellerActive && repellerCoolDown < 10) { //ON REPELLER INACTIVE
 			repellerCoolDown += Time.deltaTime;
+			//if(!repeller.GetComponent<Animator> ().IsInTransition){}
 		}
 
 		repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
-		Debug.Log (repellerCoolDown);
+		//Debug.Log (repellerCoolDown);
 		repellertext.text = "Repeller: " + repellerCoolDown;
-
 
 
 
@@ -316,7 +318,7 @@ public class playerMovement : MonoBehaviour {
 		//Redirect
 		if (Input.GetAxis ("Rbumper") > 0 && canRedirect) {
 			//Debug.Log("redirect");
-			StartCoroutine(Redirect());		
+			StartCoroutine(Redirect(goal.transform.position));		
 			canRedirect = false;
 		}
 
@@ -345,7 +347,7 @@ public class playerMovement : MonoBehaviour {
 
 		targeter = new Vector3 (0, 0, 0);
 		bulletList.Add(bullet);
-		timerS.bulletCountdown += 5;
+		timerS.bulletCountdown += bulletCountdownAdder;
 		//bulletCounter++;
 		blockAdder++;
 	}
@@ -371,10 +373,9 @@ public class playerMovement : MonoBehaviour {
 		repeller.transform.position = tPos;
 
 		repellerSound.pitch = 1;
-		repellerSound.Play();
+		repellerSound.PlayOneShot(repellerSoundClip);
 		
 		repeller.GetComponent<Animator> ().SetBool ("spawn", true);
-
 	}
 
 	void DeSpawnRepeller(){
@@ -383,21 +384,34 @@ public class playerMovement : MonoBehaviour {
 		//if(repellerSound.isPlaying)
 		//	repellerSound.Stop();
 		
-		//repellerSound.pitch = 0.5f;
-		//repellerSound.Play();
+		//repellerSound.pitch = 0.8f;
+		//repellerSound.PlayOneShot(repellerSoundClip);
 		repellerActive = false;
 		speed = 24;
+		StartCoroutine(DestroyRepeller());
+	}
+
+	IEnumerator DestroyRepeller(){
+		float destroyer = 0;
+		while (destroyer < 0.20f) {
+			destroyer += Time.deltaTime;
+			yield return 0;
+		}
+		if(!repellerActive)
+			Destroy(repeller);
+
+		yield return 0;
 	}
 
 
 
 
 
-	IEnumerator Redirect(){
-		Vector3 goalPos = goal.transform.position;
+	public IEnumerator Redirect(Vector3 targetPos){
+		//Vector3 goalPos = goal.transform.position;
 		int i = 10;
 		foreach (GameObject g in bulletList) {
-			Vector3 vectorToTarget = goalPos - g.transform.position;
+			Vector3 vectorToTarget = targetPos - g.transform.position;
 			g.rigidbody.velocity = vectorToTarget;
 			g.rigidbody.velocity.Normalize();
 			i--;
