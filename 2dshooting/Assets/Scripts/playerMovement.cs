@@ -33,6 +33,8 @@ public class playerMovement : MonoBehaviour {
 
 	//blocks
 	GameObject blockInstance;
+	public GameObject blockBox;
+	blockBox bBoxScript;
 	bool isBlockSpawning = false;
 	float blockRotationSpeed = 20;
 	public int blocksLeft = 1;
@@ -53,6 +55,8 @@ public class playerMovement : MonoBehaviour {
 	bool canRedirect = true;
 	float Redirecttimer;
 	public float redirectCool = 10;
+	public ParticleSystem redirectParticles;
+	public AudioSource redirectSound;
 
 
 	//Texts:
@@ -90,6 +94,7 @@ public class playerMovement : MonoBehaviour {
 		repellertext = repellerTextObj.GetComponent<TextMesh> ();
 		redirecttext = redirectTextObj.GetComponent<TextMesh> ();
 
+		bBoxScript = blockBox.GetComponent<blockBox> ();
 
 	}
 	
@@ -242,17 +247,16 @@ public class playerMovement : MonoBehaviour {
 		if (Input.GetAxis ("LTrigger") > 0 && isBlockSpawning == false && blocksLeft > 0) {
 			isBlockSpawning = true;
 			blockInstance = (GameObject)Instantiate(Resources.Load("block",typeof(GameObject)));
-			blockInstance.collider.isTrigger = true;
-			blockInstance.transform.position = transform.position;
+			//blockInstance.collider.isTrigger = true;
 
-			}
+		}
 
 		//BLOCK PLACING
 		if(isBlockSpawning && blockInstance != null){
 			Vector3 blockTempPos = transform.position;
 			blockTempPos.x += Input.GetAxis("RightStickX");
 			blockTempPos.y += Input.GetAxis ("RightStickY");
-			blockTempPos.z = -1;
+			blockTempPos.z = -3;
 			blockInstance.transform.position = blockTempPos;
 
 			Vector3 vectorToTarget = transform.position - blockInstance.transform.position;
@@ -262,13 +266,21 @@ public class playerMovement : MonoBehaviour {
 
 			float scaler = Mathf.Clamp(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")),0.1f,1);
 
-			blockInstance.transform.localScale = new Vector3( scaler*0.3f,scaler*2f, 1f);
+			blockInstance.transform.localScale = new Vector3( scaler*0.4f,scaler*2.3f, 1f);
 
 
 			if(Input.GetAxis ("LTrigger") == 0){
 				isBlockSpawning = false;
+				if(!bBoxScript.CanPlaceBlock()){
+					Destroy(blockInstance);
+					return;
+				}
+
 				blocksLeft--;
-				blockInstance.collider.isTrigger = false;
+				//blockInstance.collider.isTrigger = false;
+				Vector3 temp = blockInstance.transform.position;
+				temp.z += 2;
+				blockInstance.transform.position = temp;
 				if(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")) == 0){
 					Destroy(blockInstance);
 					blocksLeft++;
@@ -422,6 +434,9 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 		Redirecttimer = redirectCool;
+		redirectParticles.Play ();
+
+		redirectSound.Play ();
 		StartCoroutine(redirectCooldown());
 		yield return 0;
 	}

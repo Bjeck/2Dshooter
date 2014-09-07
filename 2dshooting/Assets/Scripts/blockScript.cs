@@ -22,10 +22,14 @@ public class blockScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision c){
+		Debug.Log ("COLLUSION");
 		if (c.gameObject.tag == "ball") {
 
 			durability--;
 		//	Debug.Log("OH SHIT! "+durability);
+		}
+		if (c.gameObject.name == "blockBox") {
+			Debug.Log("HITTING BLOCKBOX");
 		}
 	}
 }
