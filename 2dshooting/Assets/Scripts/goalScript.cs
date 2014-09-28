@@ -8,6 +8,7 @@ public class goalScript : MonoBehaviour {
 	int score = 0;
 	public AudioSource ScoreSound;
 	public AudioClip scoreSoundClip;
+	public float pitch;
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +17,9 @@ public class goalScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		pitch = ScoreSound.pitch;
+
 		scoreText.text = "Score: " + score;
 	}
 
@@ -23,11 +27,12 @@ public class goalScript : MonoBehaviour {
 	void OnCollisionEnter(Collision c){
 		if (c.gameObject.tag == "ball") {
 			score++;
-			ScoreSound.pitch += Random.Range(-1,1);
-			if(ScoreSound.pitch < 0.9f)
-				ScoreSound.pitch = 0.9f;
-			if(ScoreSound.pitch > 1.1f)
-				ScoreSound.pitch = 1.1f;
+			ScoreSound.pitch = 1;
+			ScoreSound.pitch += Random.Range(-0.1f,0.1f);
+			//if(ScoreSound.pitch < 0.9f)
+			//	ScoreSound.pitch = 0.9f;
+			//if(ScoreSound.pitch > 1.1f)
+			//	ScoreSound.pitch = 1.1f;
 
 			//if(!ScoreSound.isPlaying)
 			//	StartCoroutine(silenceSound());

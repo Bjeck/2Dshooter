@@ -29,6 +29,7 @@ public class playerMovement : MonoBehaviour {
 	public ParticleSystem shootEffect;
 	timerScript timerS;
 	public float bulletCountdownAdder = 5;
+	//float bulletRestTimer;
 
 
 	//blocks
@@ -52,9 +53,9 @@ public class playerMovement : MonoBehaviour {
 	//redirect
 	List<GameObject> bulletList = new List<GameObject> ();
 	GameObject goal;
-	bool canRedirect = true;
-	float Redirecttimer;
-	public float redirectCool = 10;
+	public bool canRedirect = true;
+	public float Redirecttimer;
+	public float redirectCool = 12;
 	public ParticleSystem redirectParticles;
 	public AudioSource redirectSound;
 
@@ -266,16 +267,20 @@ public class playerMovement : MonoBehaviour {
 
 			float scaler = Mathf.Clamp(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")),0.1f,1);
 
-			blockInstance.transform.localScale = new Vector3( scaler*0.4f,scaler*2.3f, 1f);
+			blockInstance.transform.localScale = new Vector3( scaler*0.3f,scaler*2.0f, 1f);
 
 
 			if(Input.GetAxis ("LTrigger") == 0){
 				isBlockSpawning = false;
+				//Debug.Log("Tries to place block");
 				if(!bBoxScript.CanPlaceBlock()){
+
+					//Debug.Log("can't place block");
 					Destroy(blockInstance);
 					return;
 				}
-
+				//Debug.Log("Can place block");
+				bBoxScript.canPlaceBlock = false;
 				blocksLeft--;
 				//blockInstance.collider.isTrigger = false;
 				Vector3 temp = blockInstance.transform.position;
@@ -327,7 +332,16 @@ public class playerMovement : MonoBehaviour {
 
 
 
-		//Redirect
+	// --------- ReDIRECT
+		if (canRedirect) {
+			redirecttext.text = "Redirect!";
+			redirecttext.color = Color.green;
+		}
+		else{
+			redirecttext.text = "Redirect: "+Redirecttimer;
+			redirecttext.color = Color.red;
+		}
+
 		if (Input.GetAxis ("Rbumper") > 0 && canRedirect) {
 			//Debug.Log("redirect");
 			StartCoroutine(Redirect(goal.transform.position));		
@@ -437,16 +451,16 @@ public class playerMovement : MonoBehaviour {
 		redirectParticles.Play ();
 
 		redirectSound.Play ();
-		StartCoroutine(redirectCooldown());
+	//	StartCoroutine(redirectCooldown());
 		yield return 0;
 	}
 
 
 
-	IEnumerator redirectCooldown(){
+/*	IEnumerator redirectCooldown(){
 
 		while (Redirecttimer > 0f) {
-			redirecttext.text = "Redirect: "+Redirecttimer;
+
 			//Debug.Log ("TIMER TIMER"+ Redirecttimer);
 			Redirecttimer -= Time.deltaTime;
 			yield return 0;
@@ -454,7 +468,7 @@ public class playerMovement : MonoBehaviour {
 		canRedirect = true;
 		yield return 0;
 	}
-
+*/
 
 
 

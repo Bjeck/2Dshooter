@@ -3,7 +3,7 @@ using System.Collections;
 
 public class blockBox : MonoBehaviour {
 
-	bool canPlaceBlock = false;
+	public bool canPlaceBlock = false;
 
 	// Use this for initialization
 	void Start () {
