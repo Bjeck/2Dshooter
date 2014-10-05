@@ -38,7 +38,7 @@ public class blockScript : MonoBehaviour {
 			}
 			if(playerS.Redirecttimer == 0){
 				playerS.canRedirect = true;
-				playerS.Redirecttimer = playerS.redirectCool;
+				playerS.Redirecttimer = playerS.redirectCoolInitial;
 			}
 			durability--;
 

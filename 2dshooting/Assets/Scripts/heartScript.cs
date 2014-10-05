@@ -4,7 +4,7 @@ using System.Collections;
 public class heartScript : MonoBehaviour {
 
 	TextMesh lifeText;
-	int life = 10;
+	public int life = 10;
 	
 	// Use this for initialization
 	void Start () {
