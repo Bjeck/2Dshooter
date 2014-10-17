@@ -51,11 +51,12 @@ public class playerMovement : MonoBehaviour {
 	Vector3 tPos;
 
 	//redirect
-	List<GameObject> bulletList = new List<GameObject> ();
+	public List<GameObject> bulletList = new List<GameObject> ();
 	GameObject goal;
 	public bool canRedirect = true;
 	public float Redirecttimer;
-	public float redirectCool = 12;
+	public float redirectCoolInitial = 12;
+	public float redirectCool;
 	public ParticleSystem redirectParticles;
 	public AudioSource redirectSound;
 
@@ -79,7 +80,7 @@ public class playerMovement : MonoBehaviour {
 
 		transform.position = new Vector3 (-4f, 0f, -2f);
 	
-		Redirecttimer = redirectCool;
+		Redirecttimer = redirectCoolInitial;
 		//targetLight = GetComponentInChildren<Light> ();
 		flashSound = targetLight.GetComponent<AudioSource> ();
 		flashOffSound = targetLight.GetComponent<AudioSource> ();
@@ -374,8 +375,16 @@ public class playerMovement : MonoBehaviour {
 		targeter = new Vector3 (0, 0, 0);
 		bulletList.Add(bullet);
 		timerS.bulletCountdown += bulletCountdownAdder;
+		redirectCoolInitial++;
 		//bulletCounter++;
 		blockAdder++;
+	}
+
+
+	public void RemoveBullet(GameObject b){
+		bulletList.Remove (b);
+		Destroy(b);
+		redirectCoolInitial--;
 	}
 
 
@@ -437,17 +446,19 @@ public class playerMovement : MonoBehaviour {
 		//Vector3 goalPos = goal.transform.position;
 		int i = 10;
 		foreach (GameObject g in bulletList) {
-			Vector3 vectorToTarget = targetPos - g.transform.position;
-			g.rigidbody.velocity = vectorToTarget;
-			g.rigidbody.velocity.Normalize();
-			i--;
+			if(g != null){
+				Vector3 vectorToTarget = targetPos - g.transform.position;
+				g.rigidbody.velocity = vectorToTarget;
+				g.rigidbody.velocity.Normalize();
+				i--;
 
-			if(i == 0){
-				yield return 0;
-				i = 10;
+				if(i == 0){
+					yield return 0;
+					i = 10;
+				}
 			}
 		}
-		Redirecttimer = redirectCool;
+		//Redirecttimer = redirectCoolInitial;
 		redirectParticles.Play ();
 
 		redirectSound.Play ();
