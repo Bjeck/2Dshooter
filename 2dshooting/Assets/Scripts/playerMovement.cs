@@ -47,7 +47,8 @@ public class playerMovement : MonoBehaviour {
 	bool repellerActive = false;
 	public AudioSource repellerSound;
 	public AudioClip repellerSoundClip;
-	public float repellerCoolDown = 10;
+	public float repellerCoolDown = 12;
+	public float repellerCoolDownMax;
 	Vector3 tPos;
 
 	//redirect
@@ -70,8 +71,7 @@ public class playerMovement : MonoBehaviour {
 	TextMesh balltext;
 	TextMesh repellertext;
 	TextMesh redirecttext;
-
-
+	
 	// Use this for initialization
 	void Start () {
 
@@ -98,18 +98,15 @@ public class playerMovement : MonoBehaviour {
 
 		bBoxScript = blockBox.GetComponent<blockBox> ();
 
+		repellerCoolDownMax = repellerCoolDown;
+
 	}
-	
 	// Update is called once per frame
 	void FixedUpdate () {
 
-		//if(repeller != null)
-		//	Debug.Log (repeller);
-
-		//Debug.Log (bulletCounter);
 		//Debug.Log(Input.GetAxis("Lbumper"));
 
-// ------------ MOVEMENT
+
 
 
 		//bulletCounter += Time.deltaTime*0.3f;
@@ -137,14 +134,14 @@ public class playerMovement : MonoBehaviour {
 		else{
 			lockPosition = false;
 
-			if(targeter != new Vector3(0,0,0)){ //&& canShoot !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			if(targeter != new Vector3(0,0,0)){ //&& canShoot
 		//		Debug.Log("SHOOT");
 				Shoot(targeter);
 			}
 		}
 
+// ------------------------------------------------------------------------------------------------------------------------------------- MOVEMENT
 
-		//MOVE
 		if(!lockPosition){
 			rigidbody.drag = 0;
 		//	targetLight.transform.rotation = Quaternion.LookRotation( new Vector3(0,0,0));
@@ -214,15 +211,6 @@ public class playerMovement : MonoBehaviour {
 			targetLight.intensity = 3.3f;
 		}
 
-
-		//if (isBlockSpawning) {
-		//	targetLight.intensity = 0f;
-		//		}
-		//else{
-		//	targetLight.intensity = 3.3f;
-		//}
-
-
 		volume = rigidbody.velocity.magnitude ;
 		volume /= speed;
 		//Debug.Log (volume);
@@ -235,7 +223,11 @@ public class playerMovement : MonoBehaviour {
 
 
 
-// --------------- ACTIONS
+
+// ---------------------------------------------------------------------------------------- ACTIONS
+
+
+	// -------------------------------------- BLOCK
 
 		if (blockAdder >= blockThreshold) {
 			blockAdder = 0;
@@ -294,7 +286,8 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 
-		//REPELLER
+	//------------------------------------------------ REPELLER
+
 		if (Input.GetAxis ("Lbumper") > 0 && !repellerActive && repellerCoolDown > 1) { //SPAWN REPELLER
 			repellerActive = true;
 
@@ -320,7 +313,7 @@ public class playerMovement : MonoBehaviour {
 			DeSpawnRepeller();
 		}
 
-		if (!repellerActive && repellerCoolDown < 10) { //ON REPELLER INACTIVE
+		if (!repellerActive && repellerCoolDown < repellerCoolDownMax) { //ON REPELLER INACTIVE
 			repellerCoolDown += Time.deltaTime;
 			//if(!repeller.GetComponent<Animator> ().IsInTransition){}
 		}
@@ -333,9 +326,10 @@ public class playerMovement : MonoBehaviour {
 
 
 
-	// --------- ReDIRECT
+	// --------------------------------------------------- ReDIRECT
+
 		if (canRedirect) {
-			redirecttext.text = "Redirect!";
+			redirecttext.text = "Redirect! "+Redirecttimer;
 			redirecttext.color = Color.green;
 		}
 		else{

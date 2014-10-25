@@ -8,6 +8,7 @@ public class blockScript : MonoBehaviour {
 	public GameObject player;
 	playerMovement playerS;
 	AudioSource blockHitSound;
+	camera camScript;
 
 
 	// Use this for initialization
@@ -15,6 +16,7 @@ public class blockScript : MonoBehaviour {
 		player = GameObject.FindGameObjectWithTag ("Player");
 		playerS = player.GetComponent<playerMovement> ();
 		blockHitSound = GetComponent<AudioSource> ();
+		camScript = Camera.main.GetComponent<camera> ();
 	}
 	
 	// Update is called once per frame
@@ -31,12 +33,14 @@ public class blockScript : MonoBehaviour {
 		if (c.gameObject.tag == "ball") {
 			blockHitSound.pitch = 1;
 			blockHitSound.pitch += Random.Range(-0.1f,0.1f);
+			camScript.AddToIntensity(0.5f);
 
 			blockHitSound.Play ();
-			if(!playerS.canRedirect){
+			if(!playerS.canRedirect){ //redirect charge up
 				playerS.Redirecttimer--;
+				//playerS.Redirecttimer++;
 			}
-			if(playerS.Redirecttimer == 0){
+			if(playerS.Redirecttimer == 0){ //redirect is available again.
 				playerS.canRedirect = true;
 				playerS.Redirecttimer = playerS.redirectCoolInitial;
 			}
