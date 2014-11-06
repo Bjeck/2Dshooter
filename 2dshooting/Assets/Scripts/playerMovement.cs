@@ -60,6 +60,7 @@ public class playerMovement : MonoBehaviour {
 	public float redirectCool;
 	public ParticleSystem redirectParticles;
 	public AudioSource redirectSound;
+	public bool redButtonDown = false;
 
 
 	//Texts:
@@ -328,19 +329,36 @@ public class playerMovement : MonoBehaviour {
 
 	// --------------------------------------------------- ReDIRECT
 
+
+		if(Redirecttimer >= redirectCoolInitial){ //redirect is available again.
+			canRedirect = true;
+			//Redirecttimer = 12;
+		}
+		else{
+			canRedirect = false;
+		}
+
+		float pct = (int)((Redirecttimer / redirectCoolInitial)*100);
+
 		if (canRedirect) {
-			redirecttext.text = "Redirect! "+Redirecttimer;
+			redirecttext.text = "Redirect! "+Redirecttimer+ " "+pct+"%"+" "+redirectCoolInitial;
 			redirecttext.color = Color.green;
 		}
 		else{
-			redirecttext.text = "Redirect: "+Redirecttimer;
+			redirecttext.text = "Redirect: "+Redirecttimer+ " "+pct+"%"+" "+redirectCoolInitial;
 			redirecttext.color = Color.red;
 		}
 
-		if (Input.GetAxis ("Rbumper") > 0 && canRedirect) {
+		if (Input.GetAxis ("Rbumper") > 0 && canRedirect && !redButtonDown) {
 			//Debug.Log("redirect");
-			StartCoroutine(Redirect(goal.transform.position));		
-			canRedirect = false;
+			redButtonDown = true;
+			StartCoroutine(Redirect(goal.transform.position));	
+			Redirecttimer = Redirecttimer - redirectCoolInitial;
+			//canRedirect = false;
+		}
+
+		if (redButtonDown && Input.GetAxis ("Rbumper") < 1) {
+			redButtonDown = false;
 		}
 
 

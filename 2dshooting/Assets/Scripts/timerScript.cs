@@ -13,7 +13,8 @@ public class timerScript : MonoBehaviour {
 	float parSize;
 	float parSpeed;
 	public bool lost = false;
-
+	public GameObject endingObject;
+	Ending ending;
 
 	// Use this for initialization
 	void Start () {
@@ -32,8 +33,10 @@ public class timerScript : MonoBehaviour {
 		}
 		if (bulletCountdown <= 0) {
 			//StartCoroutine( playerS.Redirect(heart.transform.position));
+
 			bulletTimerText.text = "YOU LOSE!";
 			lost = true;
+			endingObject.GetComponent<Ending>().EndGame();
 			//bulletCountdown = 10;
 		}
 

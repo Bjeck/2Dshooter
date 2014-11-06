@@ -5,6 +5,8 @@ public class heartScript : MonoBehaviour {
 
 	TextMesh lifeText;
 	public int life = 10;
+	public GameObject endingObject;
+	Ending ending;
 	
 	// Use this for initialization
 	void Start () {
@@ -20,6 +22,10 @@ public class heartScript : MonoBehaviour {
 	void OnCollisionEnter(Collision c){
 		if (c.gameObject.tag == "ball") {
 			life--;		
+
+			if(life <= 0){
+				endingObject.GetComponent<Ending>().EndGame();
+			}
 		}
 	}
 }

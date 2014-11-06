@@ -36,14 +36,11 @@ public class blockScript : MonoBehaviour {
 			camScript.AddToIntensity(0.5f);
 
 			blockHitSound.Play ();
-			if(!playerS.canRedirect){ //redirect charge up
-				playerS.Redirecttimer--;
-				//playerS.Redirecttimer++;
-			}
-			if(playerS.Redirecttimer == 0){ //redirect is available again.
-				playerS.canRedirect = true;
-				playerS.Redirecttimer = playerS.redirectCoolInitial;
-			}
+			//if(!playerS.canRedirect){ //redirect charge up
+				//playerS.Redirecttimer--;
+				playerS.Redirecttimer++;
+			//}
+
 			durability--;
 
 			//Debug.Log("OH SHIT! "+playerS.Redirecttimer);

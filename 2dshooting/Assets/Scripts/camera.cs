@@ -45,10 +45,10 @@ public class camera : MonoBehaviour {
 
 	IEnumerator LerpBackToZero(bool lowerThan0){
 		isLerping = true;
-		Debug.Log ("CALLED");
+		//Debug.Log ("CALLED");
 		if (lowerThan0) {
 			while(intensity < 0){
-				Debug.Log ("HEIGTHENING");
+				//Debug.Log ("HEIGTHENING");
 				intensity += 0.1f;
 				yield return true;
 			}
