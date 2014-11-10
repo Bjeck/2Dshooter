@@ -55,9 +55,8 @@ public class playerMovement : MonoBehaviour {
 	public List<GameObject> bulletList = new List<GameObject> ();
 	GameObject goal;
 	public bool canRedirect = true;
-	public float Redirecttimer;
-	public float redirectCoolInitial = 12;
-	public float redirectCool;
+	public float RedirectCounter;
+	public float redirectCoolCurrentGoal = 12;
 	public ParticleSystem redirectParticles;
 	public AudioSource redirectSound;
 	public bool redButtonDown = false;
@@ -81,7 +80,7 @@ public class playerMovement : MonoBehaviour {
 
 		transform.position = new Vector3 (-4f, 0f, -2f);
 	
-		Redirecttimer = redirectCoolInitial;
+		RedirectCounter = redirectCoolCurrentGoal;
 		//targetLight = GetComponentInChildren<Light> ();
 		flashSound = targetLight.GetComponent<AudioSource> ();
 		flashOffSound = targetLight.GetComponent<AudioSource> ();
@@ -289,7 +288,7 @@ public class playerMovement : MonoBehaviour {
 
 	//------------------------------------------------ REPELLER
 
-		if (Input.GetAxis ("Lbumper") > 0 && !repellerActive && repellerCoolDown > 1) { //SPAWN REPELLER
+		if (Input.GetAxis ("Lbumper") > 0 && !repellerActive) { //&& repellerCoolDown > 1   SPAWN REPELLER 
 			repellerActive = true;
 
 			//if(repellerSound.isPlaying)
@@ -304,7 +303,7 @@ public class playerMovement : MonoBehaviour {
 			tPos2.z = -1;
 			repeller.transform.position = tPos2;
 			speed = 12;
-			repellerCoolDown -= Time.deltaTime;
+	//		repellerCoolDown -= Time.deltaTime;
 			if(repellerCoolDown <= 0){
 				DeSpawnRepeller();
 			}
@@ -313,24 +312,24 @@ public class playerMovement : MonoBehaviour {
 		if (Input.GetAxis ("Lbumper") < 1 && repellerActive) { //DESPAWN REPELLER
 			DeSpawnRepeller();
 		}
-
+/*
 		if (!repellerActive && repellerCoolDown < repellerCoolDownMax) { //ON REPELLER INACTIVE
 			repellerCoolDown += Time.deltaTime;
 			//if(!repeller.GetComponent<Animator> ().IsInTransition){}
 		}
-
-		repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
+*/
+	//	repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
 		//Debug.Log (repellerCoolDown);
 		repellertext.text = "Repeller: " + repellerCoolDown;
 
 
 
 
-
+	
 	// --------------------------------------------------- ReDIRECT
 
 
-		if(Redirecttimer >= redirectCoolInitial){ //redirect is available again.
+		if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
 			canRedirect = true;
 			//Redirecttimer = 12;
 		}
@@ -338,14 +337,14 @@ public class playerMovement : MonoBehaviour {
 			canRedirect = false;
 		}
 
-		float pct = (int)((Redirecttimer / redirectCoolInitial)*100);
+		float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
 
 		if (canRedirect) {
-			redirecttext.text = "Redirect! "+Redirecttimer+ " "+pct+"%"+" "+redirectCoolInitial;
+			redirecttext.text = "Redirect! "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
 			redirecttext.color = Color.green;
 		}
 		else{
-			redirecttext.text = "Redirect: "+Redirecttimer+ " "+pct+"%"+" "+redirectCoolInitial;
+			redirecttext.text = "Redirect: "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
 			redirecttext.color = Color.red;
 		}
 
@@ -353,7 +352,7 @@ public class playerMovement : MonoBehaviour {
 			//Debug.Log("redirect");
 			redButtonDown = true;
 			StartCoroutine(Redirect(goal.transform.position));	
-			Redirecttimer = Redirecttimer - redirectCoolInitial;
+			RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
 			//canRedirect = false;
 		}
 
@@ -387,7 +386,7 @@ public class playerMovement : MonoBehaviour {
 		targeter = new Vector3 (0, 0, 0);
 		bulletList.Add(bullet);
 		timerS.bulletCountdown += bulletCountdownAdder;
-		redirectCoolInitial++;
+		redirectCoolCurrentGoal++;
 		//bulletCounter++;
 		blockAdder++;
 	}
@@ -396,7 +395,7 @@ public class playerMovement : MonoBehaviour {
 	public void RemoveBullet(GameObject b){
 		bulletList.Remove (b);
 		Destroy(b);
-		redirectCoolInitial--;
+		redirectCoolCurrentGoal--;
 	}
 
 

@@ -38,7 +38,7 @@ public class blockScript : MonoBehaviour {
 			blockHitSound.Play ();
 			//if(!playerS.canRedirect){ //redirect charge up
 				//playerS.Redirecttimer--;
-				playerS.Redirecttimer++;
+				playerS.RedirectCounter++;
 			//}
 
 			durability--;

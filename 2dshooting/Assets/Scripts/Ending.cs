@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Ending : MonoBehaviour {
 
+
+	public bool canEnd = false;
 	public bool hasEnded = false;
 
 	// Use this for initialization
@@ -30,8 +32,10 @@ public class Ending : MonoBehaviour {
 
 	public void EndGame(){
 		Debug.Log ("The game has ended");
-		Time.timeScale = 0;
-		hasEnded = true;
+		if(canEnd){
+			Time.timeScale = 0;
+			hasEnded = true;
+		}
 	}
 
 	public void RestartGame(){

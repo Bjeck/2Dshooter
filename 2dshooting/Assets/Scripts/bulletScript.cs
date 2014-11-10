@@ -8,15 +8,19 @@ public class bulletScript : MonoBehaviour {
 	GameObject player;
 	playerMovement playerS;
 	float timer;
-	public float timerStart = 5f;
+	private float timerStart = 5f;
 	TrailRenderer trail;
+	GameObject bulletManager;
 
 	// Use this for initialization
 	void Start () {
 		player = GameObject.Find ("Player");
 		trail = GetComponent<TrailRenderer> ();
 		playerS = player.GetComponent<playerMovement> ();
+		bulletManager = GameObject.FindGameObjectWithTag ("BulletManager");
+		timerStart = bulletManager.GetComponent<BulletManager> ().bulletTimer;
 		timer = timerStart;
+
 
 	}
 	
