@@ -41,6 +41,7 @@ public class playerMovement : MonoBehaviour {
 	public int blocksLeft = 1;
 	float blockAdder = 0;
 	public float blockThreshold = 10;
+	Shader blockShader;
 
 	//Repeller
 	GameObject repeller;
@@ -99,6 +100,7 @@ public class playerMovement : MonoBehaviour {
 		bBoxScript = blockBox.GetComponent<blockBox> ();
 
 		repellerCoolDownMax = repellerCoolDown;
+
 
 	}
 	// Update is called once per frame
@@ -241,6 +243,8 @@ public class playerMovement : MonoBehaviour {
 		if (Input.GetAxis ("LTrigger") > 0 && isBlockSpawning == false && blocksLeft > 0) {
 			isBlockSpawning = true;
 			blockInstance = (GameObject)Instantiate(Resources.Load("block",typeof(GameObject)));
+
+
 			//blockInstance.collider.isTrigger = true;
 
 		}
@@ -262,27 +266,36 @@ public class playerMovement : MonoBehaviour {
 
 			blockInstance.transform.localScale = new Vector3( scaler*0.3f,scaler*2.0f, 1f);
 
+			if(!bBoxScript.CanPlaceBlock()){
+				blockInstance.renderer.material.color = Color.red;
+			}
+			else{
+				blockInstance.renderer.material.color = Color.white;
+			}
+
 
 			if(Input.GetAxis ("LTrigger") == 0){
 				isBlockSpawning = false;
 				//Debug.Log("Tries to place block");
 				if(!bBoxScript.CanPlaceBlock()){
 
-					//Debug.Log("can't place block");
+					Debug.Log("can't place block");
 					Destroy(blockInstance);
 					return;
 				}
-				//Debug.Log("Can place block");
-				bBoxScript.canPlaceBlock = false;
-				blocksLeft--;
-				//blockInstance.collider.isTrigger = false;
-				Vector3 temp = blockInstance.transform.position;
-				temp.z += 2;
-				blockInstance.transform.position = temp;
 				if(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")) == 0){
 					Destroy(blockInstance);
 					blocksLeft++;
+					return;
 				}
+				Debug.Log("Can place block");
+				bBoxScript.canPlaceBlock = false;
+				blocksLeft--;
+				//blockInstance.collider.isTrigger = false;
+				Vector3 temp = blockInstance.transform.position; //Places the block in place.
+				temp.z += 2;
+				blockInstance.transform.position = temp;
+				blockInstance.tag = "block";
 			}
 		}
 

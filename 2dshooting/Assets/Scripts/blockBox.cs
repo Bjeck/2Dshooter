@@ -7,24 +7,23 @@ public class blockBox : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		//Debug.Log ("Can place block: "+canPlaceBlock);
+	//	Debug.Log ("Can place block? "+canPlaceBlock);
 	}
 
 
 	void OnTriggerEnter(Collider col){
 		//Debug.Log ("TRIGGER"+col.name);
-		if (col.gameObject.tag == "block") {
+		if (col.gameObject.tag == "blockUnplaced") {
 			canPlaceBlock = true;
 		}
 	}
 
 	void OnTriggerExit(Collider col){
-		if (col.gameObject.tag == "block") {
+		if (col.gameObject.tag == "blockUnplaced") {
 			canPlaceBlock = false;
 		}
 	}
