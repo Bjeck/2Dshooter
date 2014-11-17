@@ -5,6 +5,11 @@ using System.Collections.Generic;
 public class playerMovement : MonoBehaviour {
 
 
+	//general
+	public GameObject singleton;
+	GlobalSingleton sS;
+
+
 	//moving
 	Vector3 mover;
 	float speed = 24;
@@ -76,6 +81,9 @@ public class playerMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
+		sS = singleton.GetComponent<GlobalSingleton> ();
+
 		moveSound = GetComponent<AudioSource> ();
 		goal = GameObject.Find ("goal");
 
@@ -90,8 +98,10 @@ public class playerMovement : MonoBehaviour {
 		ballTextObj = GameObject.Find ("ballText");
 		repellerTextObj = GameObject.Find ("repellerText");
 		redirectTextObj = GameObject.Find ("redirectText");
-		timerS = GameObject.Find ("bulletTimerText").GetComponent<timerScript> ();
 
+		if(!sS.inMenu){
+			timerS = GameObject.Find ("bulletTimerText").GetComponent<timerScript> ();
+		}
 		blocktext = blockTextObj.GetComponent<TextMesh> ();
 		balltext = ballTextObj.GetComponent<TextMesh> ();
 		repellertext = repellerTextObj.GetComponent<TextMesh> ();
@@ -113,8 +123,9 @@ public class playerMovement : MonoBehaviour {
 
 		//bulletCounter += Time.deltaTime*0.3f;
 		bullets = bulletList.Count;
-		balltext.text = "Bullets: "+bullets;
-
+		if(!sS.inMenu){
+			balltext.text = "Bullets: "+bullets;
+		}
 
 
 
@@ -236,9 +247,9 @@ public class playerMovement : MonoBehaviour {
 			blocksLeft++;
 		}
 
-
-		blocktext.text = "Blocks: " + blocksLeft;
-
+		if(!sS.inMenu){
+			blocktext.text = "Blocks: " + blocksLeft;
+		}
 		//BLOCK SPAWNING
 		if (Input.GetAxis ("LTrigger") > 0 && isBlockSpawning == false && blocksLeft > 0) {
 			isBlockSpawning = true;
@@ -333,8 +344,9 @@ public class playerMovement : MonoBehaviour {
 */
 	//	repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
 		//Debug.Log (repellerCoolDown);
-		repellertext.text = "Repeller: " + repellerCoolDown;
-
+		if(!sS.inMenu){
+			repellertext.text = "Repeller: " + repellerCoolDown;
+		}
 
 
 
@@ -353,12 +365,16 @@ public class playerMovement : MonoBehaviour {
 		float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
 
 		if (canRedirect) {
-			redirecttext.text = "Redirect! "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
-			redirecttext.color = Color.green;
+			if(!sS.inMenu){
+				redirecttext.text = "Redirect! "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
+				redirecttext.color = Color.green;
+			}
 		}
 		else{
-			redirecttext.text = "Redirect: "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
-			redirecttext.color = Color.red;
+			if(!sS.inMenu){
+				redirecttext.text = "Redirect: "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
+				redirecttext.color = Color.red;
+			}
 		}
 
 		if (Input.GetAxis ("Rbumper") > 0 && canRedirect && !redButtonDown) {
@@ -398,7 +414,9 @@ public class playerMovement : MonoBehaviour {
 
 		targeter = new Vector3 (0, 0, 0);
 		bulletList.Add(bullet);
-		timerS.bulletCountdown += bulletCountdownAdder;
+		if(!sS.inMenu)
+			timerS.bulletCountdown += bulletCountdownAdder;
+
 		redirectCoolCurrentGoal++;
 		//bulletCounter++;
 		blockAdder++;

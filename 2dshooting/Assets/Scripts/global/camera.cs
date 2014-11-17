@@ -3,7 +3,10 @@ using System.Collections;
 
 public class camera : MonoBehaviour {
 
-	public float intensity = 0f;
+	public GameObject singleton;
+	GlobalSingleton sS;
+
+	float intensity = 0f;
 	Camera cam;
 	bool isLerping = false;
 	public float lerpingSpeed = 5f;
@@ -13,12 +16,23 @@ public class camera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
+		sS = singleton.GetComponent<GlobalSingleton> ();
+
 		cam = this.gameObject.camera;
+
+		if (sS.inMenu) {
+			intensity = -7f;		
+		}
+		else{
+			intensity = 500f;
+		}
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
 		cam.orthographicSize = 8+intensity;
 
 		//Debug.Log (intensity);
@@ -44,8 +58,12 @@ public class camera : MonoBehaviour {
 	void Lerp(){
 		float originalLerpSpeed = lerpingSpeed;
 		if(firstLerp){
-			
-			lerpingSpeed = 5f;
+			if(sS.inMenu){
+				lerpingSpeed = 3f;
+			}
+			else{
+				lerpingSpeed = 5f;
+			}
 		}
 		if(intensity > 0){
 			float lerpInit = intensity;

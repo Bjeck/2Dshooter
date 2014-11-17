@@ -3,6 +3,10 @@ using System.Collections;
 
 public class heartScript : MonoBehaviour {
 
+	public GameObject singleton;
+	GlobalSingleton sS;
+
+
 	TextMesh lifeText;
 	public int life = 10;
 	public GameObject endingObject;
@@ -10,12 +14,18 @@ public class heartScript : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
+		sS = singleton.GetComponent<GlobalSingleton> ();
+
 		lifeText = GetComponentInChildren<TextMesh> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		lifeText.text = "Lives: " + life;
+
+		if(!sS.inMenu){
+			lifeText.text = "Lives: " + life;
+		}
 	}
 	
 	

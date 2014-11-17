@@ -4,6 +4,9 @@ using System.Collections;
 public class goalScript : MonoBehaviour {
 
 
+	public GameObject singleton;
+	GlobalSingleton sS;
+	
 	TextMesh scoreText;
 	int score = 0;
 	public AudioSource ScoreSound;
@@ -12,6 +15,9 @@ public class goalScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
+		sS = singleton.GetComponent<GlobalSingleton> ();
+
 		scoreText = GetComponentInChildren<TextMesh> ();
 	}
 	
@@ -20,7 +26,10 @@ public class goalScript : MonoBehaviour {
 
 		pitch = ScoreSound.pitch;
 
-		scoreText.text = "Score: " + score;
+	//	Debug.Log ("From goal: " + singleton.activeSelf + " " + singleton.activeInHierarchy + " " + this.gameObject);
+		if(!sS.inMenu && this.gameObject != null){
+			scoreText.text = "Score: " + score;
+		}
 	}
 
 
