@@ -6,7 +6,7 @@ public class timerScript : MonoBehaviour {
 
 	TextMesh bulletTimerText;
 	public float bulletCountdown = 20;
-	ParticleSystem warningSystem;
+	public ParticleSystem warningSystem;
 	public GameObject player;
 	public GameObject heart;
 	playerMovement playerS;
@@ -19,7 +19,7 @@ public class timerScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		bulletTimerText = GetComponent<TextMesh> ();
-		warningSystem = GetComponentInChildren<ParticleSystem> ();
+		//warningSystem = GetComponentInChildren<ParticleSystem> ();
 		playerS = player.GetComponent<playerMovement> ();
 	}
 	

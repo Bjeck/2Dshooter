@@ -247,6 +247,8 @@ public class playerMovement : MonoBehaviour {
 			blocksLeft++;
 		}
 
+		Debug.Log(Input.GetAxis("Rbumper"));
+
 		if(!sS.inMenu){
 			blocktext.text = "Blocks: " + blocksLeft;
 		}
@@ -285,7 +287,7 @@ public class playerMovement : MonoBehaviour {
 			}
 
 
-			if(Input.GetAxis ("LTrigger") == 0){
+			if(Input.GetAxis ("LTrigger") <= 0){
 				isBlockSpawning = false;
 				//Debug.Log("Tries to place block");
 				if(!bBoxScript.CanPlaceBlock()){

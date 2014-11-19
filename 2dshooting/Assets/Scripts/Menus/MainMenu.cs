@@ -23,7 +23,7 @@ public class MainMenu : MonoBehaviour {
 
 		inMenu = sS.inMenu;
 
-		Debug.Log (inMenu);
+//		Debug.Log (inMenu);
 
 		menuText = GetComponent<TextMesh> ();
 
