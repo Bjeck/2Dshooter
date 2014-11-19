@@ -31,7 +31,7 @@ public class camera : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
 		cam.orthographicSize = 8+intensity;
 
@@ -59,10 +59,10 @@ public class camera : MonoBehaviour {
 		float originalLerpSpeed = lerpingSpeed;
 		if(firstLerp){
 			if(sS.inMenu){
-				lerpingSpeed = 3f;
+				lerpingSpeed = 5f;
 			}
 			else{
-				lerpingSpeed = 5f;
+				lerpingSpeed = 12f;
 			}
 		}
 		if(intensity > 0){

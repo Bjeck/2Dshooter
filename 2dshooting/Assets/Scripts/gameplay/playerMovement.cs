@@ -364,23 +364,22 @@ public class playerMovement : MonoBehaviour {
 
 		float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
 
-		if (canRedirect) {
-			if(!sS.inMenu){
-				redirecttext.text = "Redirect! "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
-				redirecttext.color = Color.green;
+		if(!sS.inMenu){
+			if (canRedirect) {
+					redirecttext.text = "Redirect! "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
+					redirecttext.color = Color.green;
+			}
+			else{
+					redirecttext.text = "Redirect: "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
+					redirecttext.color = Color.red;
 			}
 		}
-		else{
-			if(!sS.inMenu){
-				redirecttext.text = "Redirect: "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
-				redirecttext.color = Color.red;
-			}
-		}
-
+		
 		if (Input.GetAxis ("Rbumper") > 0 && canRedirect && !redButtonDown) {
 			//Debug.Log("redirect");
 			redButtonDown = true;
 			StartCoroutine(Redirect(goal.transform.position));	
+			if(!sS.inMenu)
 			RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
 			//canRedirect = false;
 		}
