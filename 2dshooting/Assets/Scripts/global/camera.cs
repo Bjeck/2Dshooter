@@ -16,6 +16,8 @@ public class camera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+
 		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
 		sS = singleton.GetComponent<GlobalSingleton> ();
 
