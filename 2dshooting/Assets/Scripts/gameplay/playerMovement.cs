@@ -204,6 +204,8 @@ public class playerMovement : MonoBehaviour {
 
 		Vector3 lookVector = new Vector3 (Input.GetAxis ("RightStickX"), Input.GetAxis ("RightStickY"), 0);
 
+		Debug.Log(lookVector);
+
 		if(lookVector == (new Vector3(0,0,0)) || isBlockSpawning){
 			//Debug.Log("0000");
 			//targetLight.transform.rotation = Quaternion.LookRotation(lookVector);
@@ -247,7 +249,7 @@ public class playerMovement : MonoBehaviour {
 			blocksLeft++;
 		}
 
-		Debug.Log(Input.GetAxis("Rbumper"));
+//		Debug.Log(Input.GetAxis("Rbumper"));
 
 		if(!sS.inMenu){
 			blocktext.text = "Blocks: " + blocksLeft;
@@ -301,7 +303,7 @@ public class playerMovement : MonoBehaviour {
 					blocksLeft++;
 					return;
 				}
-				Debug.Log("Can place block");
+//				Debug.Log("Can place block");
 				bBoxScript.canPlaceBlock = false;
 				blocksLeft--;
 				//blockInstance.collider.isTrigger = false;
@@ -355,13 +357,17 @@ public class playerMovement : MonoBehaviour {
 	
 	// --------------------------------------------------- ReDIRECT
 
-
-		if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
-			canRedirect = true;
-			//Redirecttimer = 12;
+		if(!sS.inMenu){
+			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
+				canRedirect = true;
+				//Redirecttimer = 12;
+			}
+			else{
+				canRedirect = false;
+			}
 		}
 		else{
-			canRedirect = false;
+			canRedirect = true;
 		}
 
 		float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
