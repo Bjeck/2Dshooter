@@ -8,6 +8,11 @@ public class bulletScript : MonoBehaviour {
 
 	public float constantSpeed = 5;
 
+
+	ParticleSystem ownParticles;
+	Color particleColor;
+	float lerpingSpeed = 8f;
+
 	public Vector3 dir;
 	GameObject player;
 	playerMovement playerS;
@@ -16,10 +21,17 @@ public class bulletScript : MonoBehaviour {
 	TrailRenderer trail;
 	GameObject bulletManager;
 
+	bool starting = true;
+
 	// Use this for initialization
 	void Start () {
 		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
 		sS = singleton.GetComponent<GlobalSingleton> ();
+
+		ownParticles = GetComponentInChildren<ParticleSystem> ();
+		particleColor = ownParticles.startColor;
+		ownParticles.Play ();
+
 
 		player = GameObject.Find ("Player");
 		trail = GetComponent<TrailRenderer> ();
@@ -35,6 +47,31 @@ public class bulletScript : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		rigidbody.velocity = constantSpeed * (rigidbody.velocity.normalized);
+
+
+		/*if (starting) {
+			ownParticles.gameObject.transform.localScale = new Vector3(1,1,1);
+			starting = false;
+		}
+		else{
+			transform.localScale = new Vector3(Mathf.Lerp(ownParticles.gameObject.transform.localScale.x,0.2678681f,lerpingSpeed*Time.fixedDeltaTime),
+			                                   Mathf.Lerp(ownParticles.gameObject.transform.localScale.y,0.2678681f,lerpingSpeed*Time.fixedDeltaTime),
+			                                   Mathf.Lerp(ownParticles.gameObject.transform.localScale.z,0.2678681f,lerpingSpeed*Time.fixedDeltaTime));
+		}
+		*/
+
+		if (starting) {
+			ownParticles.gameObject.transform.localScale = new Vector3(4f,4f,4f);
+			starting = false;
+		}
+		else{
+			ownParticles.gameObject.transform.localScale = new Vector3(Mathf.Lerp(ownParticles.gameObject.transform.localScale.x,0.4792895f,lerpingSpeed*Time.fixedDeltaTime), // 0.4792895f
+			                                                           Mathf.Lerp(ownParticles.gameObject.transform.localScale.y,0.4792895f,lerpingSpeed*Time.fixedDeltaTime),
+			                                                           Mathf.Lerp(ownParticles.gameObject.transform.localScale.z,0.4792895f,lerpingSpeed*Time.fixedDeltaTime));
+		}
+
+
+
 
 		if(!sS.inMenu){
 			if(timer>0){
@@ -56,6 +93,26 @@ public class bulletScript : MonoBehaviour {
 		}
 
 		//Debug.Log (isDamagingBullet);
+	}
+
+
+	void OnCollisionEnter(){
+	//	renderer.material.color = Color.black;
+		ownParticles.startColor = Color.black;
+		StartCoroutine (WaitForStart ());
+	}
+
+
+
+	IEnumerator WaitForStart(){
+		float t = 0;
+		while (t<0.5) {
+			t += Time.deltaTime;
+			yield return 0;
+		}
+		//renderer.material.color = particleColor;
+		ownParticles.startColor = particleColor;
+		yield return 0;
 	}
 
 
