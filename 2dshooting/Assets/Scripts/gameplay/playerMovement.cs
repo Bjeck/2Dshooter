@@ -21,6 +21,7 @@ public class playerMovement : MonoBehaviour {
 	AudioSource flashSound;
 	AudioSource flashOffSound;
 	bool flashTurn = false;
+	public ParticleSystem playerSystem;
 
 	//shooting
 	GameObject bullet;
@@ -247,7 +248,7 @@ public class playerMovement : MonoBehaviour {
 			blocksLeft++;
 		}
 
-		Debug.Log(Input.GetAxis("Rbumper"));
+//		Debug.Log(Input.GetAxis("Rbumper"));
 
 		if(!sS.inMenu){
 			blocktext.text = "Blocks: " + blocksLeft;
@@ -256,8 +257,6 @@ public class playerMovement : MonoBehaviour {
 		if (Input.GetAxis ("LTrigger") > 0 && isBlockSpawning == false && blocksLeft > 0) {
 			isBlockSpawning = true;
 			blockInstance = (GameObject)Instantiate(Resources.Load("block",typeof(GameObject)));
-
-
 			//blockInstance.collider.isTrigger = true;
 
 		}
@@ -292,7 +291,7 @@ public class playerMovement : MonoBehaviour {
 				//Debug.Log("Tries to place block");
 				if(!bBoxScript.CanPlaceBlock()){
 
-					Debug.Log("can't place block");
+					//Debug.Log("can't place block");
 					Destroy(blockInstance);
 					return;
 				}
@@ -301,7 +300,7 @@ public class playerMovement : MonoBehaviour {
 					blocksLeft++;
 					return;
 				}
-				Debug.Log("Can place block");
+//				Debug.Log("Can place block");
 				bBoxScript.canPlaceBlock = false;
 				blocksLeft--;
 				//blockInstance.collider.isTrigger = false;
@@ -355,13 +354,17 @@ public class playerMovement : MonoBehaviour {
 	
 	// --------------------------------------------------- ReDIRECT
 
-
-		if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
-			canRedirect = true;
-			//Redirecttimer = 12;
+		if(!sS.inMenu){
+			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
+				canRedirect = true;
+				//Redirecttimer = 12;
+			}
+			else{
+				canRedirect = false;
+			}
 		}
 		else{
-			canRedirect = false;
+			canRedirect = true;
 		}
 
 		float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
@@ -452,7 +455,9 @@ public class playerMovement : MonoBehaviour {
 
 		repellerSound.pitch = 1;
 		repellerSound.PlayOneShot(repellerSoundClip);
-		
+
+		playerSystem.Stop ();
+
 		repeller.GetComponent<Animator> ().SetBool ("spawn", true);
 	}
 
@@ -466,16 +471,22 @@ public class playerMovement : MonoBehaviour {
 		//repellerSound.PlayOneShot(repellerSoundClip);
 		repellerActive = false;
 		speed = 24;
+
 		StartCoroutine(DestroyRepeller());
 	}
 
 	IEnumerator DestroyRepeller(){
 		float destroyer = 0;
 		while (destroyer < 0.20f) {
+
 			destroyer += Time.deltaTime;
+			if(destroyer > 0.10f){
+				playerSystem.Play ();
+			}
 			yield return 0;
 		}
 		if(!repellerActive)
+
 			Destroy(repeller);
 
 		yield return 0;
