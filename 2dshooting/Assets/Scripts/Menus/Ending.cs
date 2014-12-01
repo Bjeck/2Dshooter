@@ -31,7 +31,7 @@ public class Ending : MonoBehaviour {
 	}
 
 	public void EndGame(){
-		Debug.Log ("The game has ended");
+//		Debug.Log ("The game has ended");
 		if(canEnd){
 			Time.timeScale = 0;
 			hasEnded = true;

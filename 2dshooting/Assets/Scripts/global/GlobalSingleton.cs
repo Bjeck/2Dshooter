@@ -4,6 +4,7 @@ using System.Collections;
 public class GlobalSingleton : MonoBehaviour {
 
 	public bool inMenu = true;
+	public bool duringStartUp = false;
 
 	private static GlobalSingleton _instance;
 
@@ -35,6 +36,5 @@ public class GlobalSingleton : MonoBehaviour {
 
 
 	void Start(){
-
 	}
 }

@@ -11,6 +11,8 @@ public class heartScript : MonoBehaviour {
 	public int life = 10;
 	public GameObject endingObject;
 	Ending ending;
+
+	public ParticleSystem heartSystem;
 	
 	// Use this for initialization
 	void Start () {
@@ -26,6 +28,10 @@ public class heartScript : MonoBehaviour {
 		if(!sS.inMenu){
 			lifeText.text = ""+life;
 		}
+
+		heartSystem.startSize = (life/16f)*0.2f;
+
+
 	}
 	
 	

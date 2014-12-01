@@ -6,7 +6,7 @@ public class camera : MonoBehaviour {
 	public GameObject singleton;
 	GlobalSingleton sS;
 
-	float intensity = 0f;
+	public float intensity = 0f;
 	float intensityGoal = 0f;
 	Camera cam;
 	bool isLerping = false;
@@ -62,7 +62,7 @@ public class camera : MonoBehaviour {
 			centerCoords.y = Mathf.Clamp(centerCoords.y,0,1.5f);
 			centerCoords.x = Mathf.Clamp(centerCoords.x,-2,2);
 			
-			moveSpeed = (float)playerScript.bulletList.Count/40;
+			moveSpeed =  (float)playerScript.bulletList.Count/40;
 			
 			transform.position = new Vector3 (Mathf.Lerp(transform.position.x,centerCoords.x,moveSpeed*Time.fixedDeltaTime), 
 			                                  Mathf.Lerp(transform.position.y,centerCoords.y,moveSpeed*Time.fixedDeltaTime), 
@@ -136,20 +136,18 @@ public class camera : MonoBehaviour {
 
 		if(firstLerp){
 			if(sS.inMenu){
+				introParticles.Play();
 				lerpingSpeed = 5f;
 			}
 			else{
-			//	introParticles.Play();
+				introParticles.Play();
 				lerpingSpeed = 12f;
 			}
 		}
 		if(intensity > 0){
 			float lerpInit = intensity;
 			intensity = Mathf.Lerp(lerpInit,0,lerpingSpeed*Time.fixedDeltaTime);
-			//if(introParticles.isPlaying){
-				//Debug.Log(introParticles.startSize);
-			//	introParticles.startSize = Mathf.Lerp(introParticles.startSize,0,lerpingSpeed*Time.fixedDeltaTime);
-			//}
+
 		}
 		else if(intensity < 0){
 			float lerpInit = intensity;
@@ -161,6 +159,10 @@ public class camera : MonoBehaviour {
 				lerpingSpeed = originalLerpSpeed;
 				firstLerp = false;
 			}
+		}
+		if(introParticles.isPlaying){
+			//Debug.Log(introParticles.startSize);
+			introParticles.startSize = Mathf.Lerp(introParticles.startSize,0,15f*Time.fixedDeltaTime);
 		}
 	}
 

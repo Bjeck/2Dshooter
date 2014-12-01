@@ -38,6 +38,7 @@ public class playerMovement : MonoBehaviour {
 	public float bulletCountdownAdder = 5;
 	//float bulletRestTimer;
 	public List<GameObject> bulletList = new List<GameObject> ();
+	Vector3 lookVector;
 
 	//blocks
 	GameObject blockInstance;
@@ -109,6 +110,8 @@ public class playerMovement : MonoBehaviour {
 		balltext = ballTextObj.GetComponent<TextMesh> ();
 		repellertext = repellerTextObj.GetComponent<TextMesh> ();
 		redirecttext = redirectTextObj.GetComponent<TextMesh> ();
+		repellertext.text = "LB: Repeller";
+
 
 		bBoxScript = blockBox.GetComponent<blockBoxManager> ();
 
@@ -119,6 +122,7 @@ public class playerMovement : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void FixedUpdate () {
+
 
 		//Debug.Log(Input.GetAxis("Lbumper"));
 
@@ -183,7 +187,7 @@ public class playerMovement : MonoBehaviour {
 
 			transform.rigidbody.velocity = temp;
 
-			//Debug.Log (Input.GetAxis ("Vertical"));
+		//	Debug.Log (Input.GetAxis ("Horizontal"));
 
 		}
 		else{
@@ -206,7 +210,7 @@ public class playerMovement : MonoBehaviour {
 
 		}
 
-		Vector3 lookVector = new Vector3 (Input.GetAxis ("RightStickX"), Input.GetAxis ("RightStickY"), 0);
+		lookVector = new Vector3 (Input.GetAxis ("RightStickX"), Input.GetAxis ("RightStickY"), 0);
 
 		if(lookVector == (new Vector3(0,0,0)) || isBlockSpawning){
 			//Debug.Log("0000");
@@ -296,11 +300,16 @@ public class playerMovement : MonoBehaviour {
 
 					//Debug.Log("can't place block");
 					Destroy(blockInstance);
+
 				//	bBoxScript.canPlaceBlock = false;
 					return;
 				}
 				if(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")) == 0){
 					Destroy(blockInstance);
+					//Debug.Log("from player"+bBoxScript.isInTopCorner);
+					StartCoroutine(WaitToResetBlockBool());
+
+					//Debug.Log("from player2"+bBoxScript.isInTopCorner);
 					blocksLeft++;
 					return;
 				}
@@ -349,10 +358,13 @@ public class playerMovement : MonoBehaviour {
 */
 	//	repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
 		//Debug.Log (repellerCoolDown);
-		if(!sS.inMenu){
-			repellertext.text = "Repeller: " + repellerCoolDown;
+	/*	if(!sS.inMenu){
+			repellertext.text = "LB: Repeller";
 		}
-
+		else{
+			repellertext.text = "LB: Repeller";
+		}
+*/
 
 
 	
@@ -403,15 +415,14 @@ public class playerMovement : MonoBehaviour {
 
 
 
-
-
-
 	void Shoot(Vector3 vel){
 		camScript.AddToIntensity(1f);
 
 		bullet = (GameObject)Instantiate(Resources.Load("bullet",typeof(GameObject)));
 		Vector3 bulletTemp = transform.position;
+		bulletTemp += lookVector.normalized/3f;
 		bulletTemp.z = -1;
+
 		bullet.transform.position = bulletTemp;
 		bullet.rigidbody.velocity = vel*bulletSpeed;
 
@@ -442,9 +453,6 @@ public class playerMovement : MonoBehaviour {
 	public void addToBlocks(){
 		blocksLeft++;
 	}
-
-
-
 
 
 	void SpawnRepeller(){
@@ -499,10 +507,6 @@ public class playerMovement : MonoBehaviour {
 		yield return 0;
 	}
 
-
-
-
-
 	public IEnumerator Redirect(Vector3 targetPos){
 		//Vector3 goalPos = goal.transform.position;
 		int i = 10;
@@ -525,6 +529,18 @@ public class playerMovement : MonoBehaviour {
 		redirectSound.Play ();
 	//	StartCoroutine(redirectCooldown());
 		yield return 0;
+	}
+
+
+	IEnumerator WaitToResetBlockBool()
+	{
+		//returning 0 will make it wait 1 frame
+		yield return 0;
+		
+		//code goes here
+		bBoxScript.SetInTopCorner(false);
+		
+		
 	}
 
 

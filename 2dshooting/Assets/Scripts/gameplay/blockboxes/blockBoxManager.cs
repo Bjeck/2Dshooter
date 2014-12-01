@@ -3,9 +3,9 @@ using System.Collections;
 
 public class blockBoxManager : MonoBehaviour {
 
+	float counter = 0f;
 	bool canPlaceBlock = false;
-	bool isInTopCorner = false;
-	bool insideBottomCorner = false;
+	public bool isInTopCorner = false;
 	bool isOutOfBounds = false;
 
 
@@ -17,7 +17,7 @@ public class blockBoxManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		//Debug.Log ("topcorner: " + isInTopCorner + " outofboungs: " + isOutOfBounds + "  canplace: " + canPlaceBlock);
+	//	Debug.Log ("topcorner: " + isInTopCorner + " outofboungs: " + isOutOfBounds + "  canplace: " + canPlaceBlock);
 
 		if (isInTopCorner && !isOutOfBounds) {
 			canPlaceBlock = true;
@@ -30,11 +30,9 @@ public class blockBoxManager : MonoBehaviour {
 
 
 	public void SetInTopCorner(bool b){
+		counter++;
+		//Debug.Log("GETTING "+b+" "+counter);
 		isInTopCorner = b;
-	}
-
-	public void SetInBottomCorner(bool b){
-
 	}
 
 	public void SetOutOfBounds(bool b){
