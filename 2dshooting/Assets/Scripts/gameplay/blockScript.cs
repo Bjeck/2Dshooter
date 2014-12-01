@@ -4,11 +4,13 @@ using System.Collections;
 public class blockScript : MonoBehaviour {
 
 
-	public int durability = 20;
+	public int durability;
+	int maxDurability;
 	public GameObject player;
 	playerMovement playerS;
 	AudioSource blockHitSound;
 	camera camScript;
+	float durColorVal;
 
 
 	// Use this for initialization
@@ -17,6 +19,7 @@ public class blockScript : MonoBehaviour {
 		playerS = player.GetComponent<playerMovement> ();
 		blockHitSound = GetComponent<AudioSource> ();
 		camScript = Camera.main.GetComponent<camera> ();
+		maxDurability = durability;
 	}
 	
 	// Update is called once per frame
@@ -33,7 +36,7 @@ public class blockScript : MonoBehaviour {
 		if (c.gameObject.tag == "ball") {
 			blockHitSound.pitch = 1;
 			blockHitSound.pitch += Random.Range(-0.1f,0.1f);
-			camScript.AddToIntensity(0.5f);
+			camScript.SubtractFromIntensity(0.25f);
 
 			blockHitSound.Play ();
 			//if(!playerS.canRedirect){ //redirect charge up
@@ -42,6 +45,8 @@ public class blockScript : MonoBehaviour {
 			//}
 
 			durability--;
+			durColorVal = (float)durability/maxDurability;
+			renderer.material.color = new Color(durColorVal,durColorVal,durColorVal);
 
 			//Debug.Log("OH SHIT! "+playerS.Redirecttimer);
 		}

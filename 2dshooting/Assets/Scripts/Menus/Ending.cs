@@ -20,10 +20,10 @@ public class Ending : MonoBehaviour {
 			}
 		}
 		else if(!hasEnded){
-			if(Input.GetKeyDown(KeyCode.Space)){
+			if(Input.GetKeyDown(KeyCode.LeftShift)){
 				Time.timeScale = 0.5f;
 			}
-			else if(Input.GetKeyUp(KeyCode.Space)){
+			else if(Input.GetKeyUp(KeyCode.LeftShift)){
 				Time.timeScale = 1f;
 			}
 		}

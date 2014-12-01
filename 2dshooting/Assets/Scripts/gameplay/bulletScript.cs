@@ -98,8 +98,10 @@ public class bulletScript : MonoBehaviour {
 
 	void OnCollisionEnter(){
 	//	renderer.material.color = Color.black;
-		ownParticles.startColor = Color.black;
-		StartCoroutine (WaitForStart ());
+		if(ownParticles != null){
+			ownParticles.startColor = Color.black;
+			StartCoroutine (WaitForStart ());
+		}
 	}
 
 

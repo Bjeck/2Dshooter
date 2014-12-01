@@ -8,6 +8,7 @@ public class playerMovement : MonoBehaviour {
 	//general
 	public GameObject singleton;
 	GlobalSingleton sS;
+	camera camScript;
 
 
 	//moving
@@ -36,12 +37,12 @@ public class playerMovement : MonoBehaviour {
 	timerScript timerS;
 	public float bulletCountdownAdder = 5;
 	//float bulletRestTimer;
-
+	public List<GameObject> bulletList = new List<GameObject> ();
 
 	//blocks
 	GameObject blockInstance;
 	public GameObject blockBox;
-	blockBox bBoxScript;
+	blockBoxManager bBoxScript;
 	bool isBlockSpawning = false;
 	float blockRotationSpeed = 20;
 	public int blocksLeft = 1;
@@ -57,9 +58,9 @@ public class playerMovement : MonoBehaviour {
 	public float repellerCoolDown = 12;
 	public float repellerCoolDownMax;
 	Vector3 tPos;
+	TrailRenderer trail;
 
 	//redirect
-	public List<GameObject> bulletList = new List<GameObject> ();
 	GameObject goal;
 	public bool canRedirect = true;
 	public float RedirectCounter;
@@ -94,6 +95,7 @@ public class playerMovement : MonoBehaviour {
 		//targetLight = GetComponentInChildren<Light> ();
 		flashSound = targetLight.GetComponent<AudioSource> ();
 		flashOffSound = targetLight.GetComponent<AudioSource> ();
+		trail = GetComponent<TrailRenderer>();
 
 		blockTextObj = GameObject.Find ("blockText");
 		ballTextObj = GameObject.Find ("ballText");
@@ -108,9 +110,10 @@ public class playerMovement : MonoBehaviour {
 		repellertext = repellerTextObj.GetComponent<TextMesh> ();
 		redirecttext = redirectTextObj.GetComponent<TextMesh> ();
 
-		bBoxScript = blockBox.GetComponent<blockBox> ();
+		bBoxScript = blockBox.GetComponent<blockBoxManager> ();
 
 		repellerCoolDownMax = repellerCoolDown;
+		camScript = Camera.main.GetComponent<camera> ();
 
 
 	}
@@ -293,6 +296,7 @@ public class playerMovement : MonoBehaviour {
 
 					//Debug.Log("can't place block");
 					Destroy(blockInstance);
+				//	bBoxScript.canPlaceBlock = false;
 					return;
 				}
 				if(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")) == 0){
@@ -301,7 +305,7 @@ public class playerMovement : MonoBehaviour {
 					return;
 				}
 //				Debug.Log("Can place block");
-				bBoxScript.canPlaceBlock = false;
+				//bBoxScript.canPlaceBlock = false;
 				blocksLeft--;
 				//blockInstance.collider.isTrigger = false;
 				Vector3 temp = blockInstance.transform.position; //Places the block in place.
@@ -383,6 +387,7 @@ public class playerMovement : MonoBehaviour {
 		if (Input.GetAxis ("Rbumper") > 0 && canRedirect && !redButtonDown) {
 			//Debug.Log("redirect");
 			redButtonDown = true;
+			camScript.SubtractFromIntensity(1f);
 			StartCoroutine(Redirect(goal.transform.position));	
 			if(!sS.inMenu)
 			RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
@@ -402,7 +407,7 @@ public class playerMovement : MonoBehaviour {
 
 
 	void Shoot(Vector3 vel){
-
+		camScript.AddToIntensity(1f);
 
 		bullet = (GameObject)Instantiate(Resources.Load("bullet",typeof(GameObject)));
 		Vector3 bulletTemp = transform.position;
@@ -457,6 +462,7 @@ public class playerMovement : MonoBehaviour {
 		repellerSound.PlayOneShot(repellerSoundClip);
 
 		playerSystem.Stop ();
+		trail.enabled = false;
 
 		repeller.GetComponent<Animator> ().SetBool ("spawn", true);
 	}
@@ -471,6 +477,7 @@ public class playerMovement : MonoBehaviour {
 		//repellerSound.PlayOneShot(repellerSoundClip);
 		repellerActive = false;
 		speed = 24;
+		trail.enabled = true;
 
 		StartCoroutine(DestroyRepeller());
 	}

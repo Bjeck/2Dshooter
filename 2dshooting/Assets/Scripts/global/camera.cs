@@ -7,12 +7,29 @@ public class camera : MonoBehaviour {
 	GlobalSingleton sS;
 
 	float intensity = 0f;
+	float intensityGoal = 0f;
 	Camera cam;
 	bool isLerping = false;
-	public float lerpingSpeed = 5f;
+	float lerpingSpeed = 1f;
+	float actionLerpSpeed = 20f;
+	float originalLerpSpeed;
 	bool firstLerp = true;
 
+	bool isZooming = false;
 	Vector3 cameraPos;
+
+	public ParticleSystem introParticles;
+	public GameObject player;
+	playerMovement playerScript;
+
+	Vector2 centerCoords = new Vector2(0,0);
+	public float moveSpeed = 0.5f;
+
+	float intensityLerpGoal = 0f;
+	float intensityAdder;
+	float intensitySubtracter;
+	bool changeIntensity = false;
+
 
 	// Use this for initialization
 	void Start () {
@@ -20,8 +37,10 @@ public class camera : MonoBehaviour {
 
 		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
 		sS = singleton.GetComponent<GlobalSingleton> ();
+		playerScript = player.GetComponent<playerMovement> ();
 
 		cam = this.gameObject.camera;
+		originalLerpSpeed = lerpingSpeed;
 
 		if (sS.inMenu) {
 			intensity = -7f;		
@@ -30,46 +49,107 @@ public class camera : MonoBehaviour {
 			intensity = 500f;
 		}
 
+
+
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 
-		cam.orthographicSize = 8+intensity;
+		CenterOfBullets(); //setting camera to move slightly according to bulletpositions
+		if(centerCoords != new Vector2(0,0)){
+			
+			centerCoords.y = Mathf.Clamp(centerCoords.y,0,1.5f);
+			centerCoords.x = Mathf.Clamp(centerCoords.x,-2,2);
+			
+			moveSpeed = (float)playerScript.bulletList.Count/40;
+			
+			transform.position = new Vector3 (Mathf.Lerp(transform.position.x,centerCoords.x,moveSpeed*Time.fixedDeltaTime), 
+			                                  Mathf.Lerp(transform.position.y,centerCoords.y,moveSpeed*Time.fixedDeltaTime), 
+			                                  transform.position.z);
+		}
 
-		//Debug.Log (intensity);
+
+
+/*
+		if(blockHits > 0){
+			BlockHitToLerp ();
+			intensityGoal = -(blockHits / 100f);
+		}
+
+		//intensity += intensityGoal;
+*/
+
+		if (!firstLerp) {
+			lerpingSpeed = Mathf.Abs(intensity*4)+originalLerpSpeed;		
+		}
+
+		if (changeIntensity) {
+			intensity = intensity + intensityAdder - intensitySubtracter;
+			intensityAdder = 0;
+			intensitySubtracter = 0;
+			changeIntensity = false;
+		}
+
+
+		if (intensityLerpGoal != 0) {
+			LerpIntensity(intensityLerpGoal);		
+		}
 
 		if (intensity != 0) {
 			Lerp ();
 		}
+		cam.orthographicSize = 8+intensity;
 
-
+		//Debug.Log (intensity + " Goal: "+intensityLerpGoal+"  +: " + intensityAdder+" -: "+intensitySubtracter+"  " + lerpingSpeed+"  "+firstLerp);
 	} //update end
 
 
 	public void AddToIntensity(float a){
+		if (firstLerp) {
+			firstLerp = !firstLerp;		
+			lerpingSpeed = originalLerpSpeed;
+		}
+		intensityAdder += 0.1f*a;
+		changeIntensity = true;
+	}
 
-		a /= 10f;
-
-		intensity -= a;
-		//StartCoroutine (LerpBackToZero (true));
+	public void SubtractFromIntensity(float a){
+		if (firstLerp) {
+			firstLerp = !firstLerp;		
+			lerpingSpeed = originalLerpSpeed;
+		}
+		intensitySubtracter += 0.1f*a;
+		changeIntensity = true;
 	}
 
 
+	void LerpIntensity(float goal){
+		intensity = Mathf.Lerp (intensity, goal, actionLerpSpeed * Time.fixedDeltaTime);
+
+		intensityAdder = Mathf.Lerp (intensityAdder, 0, 1 * Time.fixedDeltaTime);
+		intensitySubtracter = Mathf.Lerp (intensitySubtracter, 0, 1 * Time.fixedDeltaTime);
+	}
+
 
 	void Lerp(){
-		float originalLerpSpeed = lerpingSpeed;
+
 		if(firstLerp){
 			if(sS.inMenu){
 				lerpingSpeed = 5f;
 			}
 			else{
+			//	introParticles.Play();
 				lerpingSpeed = 12f;
 			}
 		}
 		if(intensity > 0){
 			float lerpInit = intensity;
 			intensity = Mathf.Lerp(lerpInit,0,lerpingSpeed*Time.fixedDeltaTime);
+			//if(introParticles.isPlaying){
+				//Debug.Log(introParticles.startSize);
+			//	introParticles.startSize = Mathf.Lerp(introParticles.startSize,0,lerpingSpeed*Time.fixedDeltaTime);
+			//}
 		}
 		else if(intensity < 0){
 			float lerpInit = intensity;
@@ -79,8 +159,23 @@ public class camera : MonoBehaviour {
 			isLerping = false;
 			if(firstLerp){
 				lerpingSpeed = originalLerpSpeed;
+				firstLerp = false;
 			}
 		}
+	}
+
+
+
+
+	void CenterOfBullets(){
+
+		Vector2 sum = new Vector2(0.0f,0.0f);
+		foreach (GameObject b in playerScript.bulletList) {
+			sum += new Vector2(b.transform.position.x,b.transform.position.y);
+		}
+		centerCoords.x = sum.x/ playerScript.bulletList.Count;
+		centerCoords.y = sum.y/ playerScript.bulletList.Count;
+
 	}
 
 

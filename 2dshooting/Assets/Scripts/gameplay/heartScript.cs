@@ -6,7 +6,7 @@ public class heartScript : MonoBehaviour {
 	public GameObject singleton;
 	GlobalSingleton sS;
 
-
+	public GameObject lifeTextObject;
 	TextMesh lifeText;
 	public int life = 10;
 	public GameObject endingObject;
@@ -17,14 +17,14 @@ public class heartScript : MonoBehaviour {
 		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
 		sS = singleton.GetComponent<GlobalSingleton> ();
 
-		lifeText = GetComponentInChildren<TextMesh> ();
+		lifeText = lifeTextObject.GetComponent<TextMesh> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 		if(!sS.inMenu){
-			lifeText.text = "Lives: " + life;
+			lifeText.text = ""+life;
 		}
 	}
 	
