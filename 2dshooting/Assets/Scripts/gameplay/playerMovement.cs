@@ -39,9 +39,12 @@ public class playerMovement : MonoBehaviour {
 	//float bulletRestTimer;
 	public List<GameObject> bulletList = new List<GameObject> ();
 	Vector3 lookVector;
+	public GameObject blockManagerObject;
+	blockManager blockMan;
 
 	//blocks
 	GameObject blockInstance;
+	blockScript BlockS;
 	public GameObject blockBox;
 	blockBoxManager bBoxScript;
 	bool isBlockSpawning = false;
@@ -50,6 +53,11 @@ public class playerMovement : MonoBehaviour {
 	float blockAdder = 0;
 	public float blockThreshold = 10;
 	Shader blockShader;
+	float blockInstantPlaceTimer;
+	bool blockInstantTimerRunning = false;
+	public GameObject blockInMiddle;
+	public AudioSource blockPlaceSound;
+	public AudioSource blockPullSound;
 
 	//Repeller
 	GameObject repeller;
@@ -69,7 +77,7 @@ public class playerMovement : MonoBehaviour {
 	public ParticleSystem redirectParticles;
 	public AudioSource redirectSound;
 	public bool redButtonDown = false;
-
+	public Light redirectLight;
 
 	//Texts:
 	GameObject blockTextObj;
@@ -114,6 +122,7 @@ public class playerMovement : MonoBehaviour {
 
 
 		bBoxScript = blockBox.GetComponent<blockBoxManager> ();
+		blockMan = blockManagerObject.GetComponent<blockManager>();
 
 		repellerCoolDownMax = repellerCoolDown;
 		camScript = Camera.main.GetComponent<camera> ();
@@ -252,75 +261,123 @@ public class playerMovement : MonoBehaviour {
 
 		if (blockAdder >= blockThreshold) {
 			blockAdder = 0;
-			blocksLeft++;
+			//blocksLeft++;
+			blockMan.UpdateAmountOfAvailableBlocks(1);
 		}
 
 //		Debug.Log(Input.GetAxis("Rbumper"));
 
 		if(!sS.inMenu){
-			blocktext.text = "Blocks: " + blocksLeft;
+			blocktext.text = "Blocks: " + blockMan.GetAmountOfBlocksInMiddle();
 		}
-		//BLOCK SPAWNING
-		if (Input.GetAxis ("LTrigger") > 0 && isBlockSpawning == false && blocksLeft > 0) {
+		//BLOCK GRABBING
+		if (Input.GetAxis ("LTrigger") > 0 && !isBlockSpawning && blockMan.GetAmountOfBlocksInMiddle() > 0) {
 			isBlockSpawning = true;
-			blockInstance = (GameObject)Instantiate(Resources.Load("block",typeof(GameObject)));
+			blockInstance = blockMan.TakeBlockFromMiddle(); //(GameObject)Instantiate(Resources.Load("block",typeof(GameObject)));
+			BlockS = blockInstance.GetComponent<blockScript>();
+			blockInstantTimerRunning = true;
+			blockPullSound.Play();
+			BlockS.ChangeParticlesSize(0.08f);
+			blockInstance.renderer.enabled = false;
 			//blockInstance.collider.isTrigger = true;
 
 		}
 
-		//BLOCK PLACING
+		//BLOCK DRAGGING
 		if(isBlockSpawning && blockInstance != null){
 			Vector3 blockTempPos = transform.position;
 			blockTempPos.x += Input.GetAxis("RightStickX");
 			blockTempPos.y += Input.GetAxis ("RightStickY");
 			blockTempPos.z = -3;
-			blockInstance.transform.position = blockTempPos;
 
 			Vector3 vectorToTarget = transform.position - blockInstance.transform.position;
+			float distanceToTarget = Vector2.Distance(transform.position,blockInstance.transform.position);
+
 			float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
 			Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-			blockInstance.transform.rotation = Quaternion.Slerp(blockInstance.transform.rotation, q, Time.deltaTime * blockRotationSpeed);
+			distanceToTarget *= 2f;
 
-			float scaler = Mathf.Clamp(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")),0.1f,1);
+			float scaler = Mathf.Clamp(distanceToTarget*1f,0.1f,1);
 
+			float lerpingSpeed = (1/distanceToTarget)+30f;
+
+
+			blockInstance.transform.position = new Vector3(Mathf.Lerp(blockInstance.transform.position.x,blockTempPos.x,lerpingSpeed*Time.deltaTime),
+			                                               Mathf.Lerp(blockInstance.transform.position.y,blockTempPos.y,lerpingSpeed*Time.deltaTime),blockTempPos.z);
+
+			//blockInstance.transform.position = blockTempPos;
+
+			//blockInstance.transform.rotation = Quaternion.Slerp(blockInstance.transform.rotation, q, Time.deltaTime * blockRotationSpeed);
+			blockInstance.transform.rotation = q;
+
+			//float scaler = Mathf.Clamp(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY"))*1.4f,0.1f,1);
+
+
+//			Debug.Log(distanceToTarget);
 			blockInstance.transform.localScale = new Vector3( scaler*0.3f,scaler*2.0f, 1f);
 
 			if(!bBoxScript.CanPlaceBlock()){
 				blockInstance.renderer.material.color = Color.red;
+				BlockS.ChangeParticlesColor(Color.red);
 			}
 			else{
 				blockInstance.renderer.material.color = Color.white;
+				BlockS.ChangeParticlesColor(Color.white);
 			}
 
+			if(blockInstantTimerRunning){
+				blockInstantPlaceTimer += Time.fixedDeltaTime;
+			}
 
+			//BLOCK PLACING
 			if(Input.GetAxis ("LTrigger") <= 0){
 				isBlockSpawning = false;
 				//Debug.Log("Tries to place block");
+
+
 				if(!bBoxScript.CanPlaceBlock()){
 
 					//Debug.Log("can't place block");
+					blockMan.PlaceBlockBackInMiddle();
 					Destroy(blockInstance);
-
+					StartCoroutine(WaitToResetBlockBool());
 				//	bBoxScript.canPlaceBlock = false;
 					return;
 				}
+			/*	if(blockInstantPlaceTimer <= 0.5f){ //If it was an instant press
+					Vector3 vectorToGoal = goal.transform.position - blockInstance.transform.position;
+					float angleToGoal = Mathf.Atan2(vectorToGoal.y, vectorToGoal.x) * Mathf.Rad2Deg;
+					Quaternion q2 = Quaternion.AngleAxis(angleToGoal, Vector3.forward);
+					blockInstance.transform.rotation = q2;
+					//blockInstance.transform.localScale = new Vector3(0.3f,2.0f, 1f);
+					//blockInstance.transform.LookAt(goal.transform.position);
+				}
+*/
+
 				if(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")) == 0){
+					blockMan.PlaceBlockBackInMiddle();
 					Destroy(blockInstance);
 					//Debug.Log("from player"+bBoxScript.isInTopCorner);
 					StartCoroutine(WaitToResetBlockBool());
 
 					//Debug.Log("from player2"+bBoxScript.isInTopCorner);
-					blocksLeft++;
+				//	blocksLeft++;
 					return;
 				}
 //				Debug.Log("Can place block");
 				//bBoxScript.canPlaceBlock = false;
-				blocksLeft--;
+			//	blocksLeft--;
 				//blockInstance.collider.isTrigger = false;
 				Vector3 temp = blockInstance.transform.position; //Places the block in place.
 				temp.z += 2;
 				blockInstance.transform.position = temp;
 				blockInstance.tag = "block";
+				ParticleSystem blockParticles = blockInstance.GetComponentInChildren<ParticleSystem>();
+			//	blockParticles.transform.eulerAngles += new Vector3(0,0,90f);
+				blockParticles.Play ();
+				blockPlaceSound.Play();
+				StartCoroutine(WaitToResetBlockBool());
+				BlockS.SpreadOutParticles();
 			}
 		}
 
@@ -373,14 +430,17 @@ public class playerMovement : MonoBehaviour {
 		if(!sS.inMenu){
 			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
 				canRedirect = true;
+				redirectLight.intensity = 2;
 				//Redirecttimer = 12;
 			}
 			else{
 				canRedirect = false;
+				redirectLight.intensity = 0;
 			}
 		}
 		else{
 			canRedirect = true;
+			redirectLight.intensity = 0;
 		}
 
 		float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);

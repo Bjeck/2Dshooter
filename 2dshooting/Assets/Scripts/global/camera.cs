@@ -62,14 +62,12 @@ public class camera : MonoBehaviour {
 			centerCoords.y = Mathf.Clamp(centerCoords.y,0,1.5f);
 			centerCoords.x = Mathf.Clamp(centerCoords.x,-2,2);
 			
-			moveSpeed =  (float)playerScript.bulletList.Count/40;
+			moveSpeed =  ((float)playerScript.bulletList.Count)/40;
 			
 			transform.position = new Vector3 (Mathf.Lerp(transform.position.x,centerCoords.x,moveSpeed*Time.fixedDeltaTime), 
 			                                  Mathf.Lerp(transform.position.y,centerCoords.y,moveSpeed*Time.fixedDeltaTime), 
 			                                  transform.position.z);
 		}
-
-
 
 /*
 		if(blockHits > 0){
@@ -145,13 +143,11 @@ public class camera : MonoBehaviour {
 			}
 		}
 		if(intensity > 0){
-			float lerpInit = intensity;
-			intensity = Mathf.Lerp(lerpInit,0,lerpingSpeed*Time.fixedDeltaTime);
+			intensity = Mathf.Lerp(intensity,0,lerpingSpeed*Time.fixedDeltaTime);
 
 		}
 		else if(intensity < 0){
-			float lerpInit = intensity;
-			intensity = Mathf.Lerp(lerpInit,0,lerpingSpeed*Time.fixedDeltaTime);
+			intensity = Mathf.Lerp(intensity,0,lerpingSpeed*Time.fixedDeltaTime);
 		}
 		else{
 			isLerping = false;
