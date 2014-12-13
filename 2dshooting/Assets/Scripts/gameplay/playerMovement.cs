@@ -78,16 +78,21 @@ public class playerMovement : MonoBehaviour {
 	public AudioSource redirectSound;
 	public bool redButtonDown = false;
 	public Light redirectLight;
+	public List<GameObject> redirectObjects = new List<GameObject>();
+	Color rediColor = new Color(216,75,0);
 
 	//Texts:
 	GameObject blockTextObj;
 	public GameObject ballTextObj;
 	GameObject repellerTextObj;
 	GameObject redirectTextObj;
+	public GameObject redirectpcttextObj;
+
 	TextMesh blocktext;
 	TextMesh balltext;
 	TextMesh repellertext;
 	TextMesh redirecttext;
+	TextMesh redirectpcttext;
 	
 	// Use this for initialization
 	void Start () {
@@ -111,6 +116,7 @@ public class playerMovement : MonoBehaviour {
 		repellerTextObj = GameObject.Find ("repellerText");
 		redirectTextObj = GameObject.Find ("redirectText");
 
+
 		if(!sS.inMenu){
 			timerS = GameObject.Find ("bulletTimerText").GetComponent<timerScript> ();
 		}
@@ -118,6 +124,8 @@ public class playerMovement : MonoBehaviour {
 		balltext = ballTextObj.GetComponent<TextMesh> ();
 		repellertext = repellerTextObj.GetComponent<TextMesh> ();
 		redirecttext = redirectTextObj.GetComponent<TextMesh> ();
+		redirectpcttext = redirectpcttextObj.GetComponent<TextMesh>();
+		Debug.Log(redirectpcttext.gameObject);
 		repellertext.text = "LB: Repeller";
 
 
@@ -431,11 +439,17 @@ public class playerMovement : MonoBehaviour {
 			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
 				canRedirect = true;
 				redirectLight.intensity = 2;
+				foreach(GameObject g in redirectObjects){
+					g.renderer.material.color = rediColor;
+				}
 				//Redirecttimer = 12;
 			}
 			else{
 				canRedirect = false;
 				redirectLight.intensity = 0;
+				foreach(GameObject g in redirectObjects){
+					g.renderer.material.color = Color.black;
+				}
 			}
 		}
 		else{
@@ -447,12 +461,16 @@ public class playerMovement : MonoBehaviour {
 
 		if(!sS.inMenu){
 			if (canRedirect) {
-					redirecttext.text = "Redirect! "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
-					redirecttext.color = Color.green;
+				redirecttext.text = "RB! "+RedirectCounter+ "/"+redirectCoolCurrentGoal;
+				redirectpcttext.text = ""+pct+"%";
+				redirecttext.color = rediColor;
+				redirectpcttext.color = rediColor;
 			}
 			else{
-					redirecttext.text = "Redirect: "+RedirectCounter+ "/"+redirectCoolCurrentGoal+", "+pct+"%";
-					redirecttext.color = Color.red;
+				redirecttext.text = "    "+RedirectCounter+ "/"+redirectCoolCurrentGoal;
+				redirectpcttext.text = ""+pct+"%";
+				redirecttext.color = Color.red;
+				redirectpcttext.color = Color.red;
 			}
 		}
 		
@@ -570,7 +588,7 @@ public class playerMovement : MonoBehaviour {
 	public IEnumerator Redirect(Vector3 targetPos){
 		//Vector3 goalPos = goal.transform.position;
 		int i = 10;
-		foreach (GameObject g in bulletList) {
+		foreach (GameObject g in bulletList) { // I figured out the bug. It's because a bullet can be deleted during one of these frames.
 			if(g != null){
 				Vector3 vectorToTarget = targetPos - g.transform.position;
 				g.rigidbody.velocity = vectorToTarget;
