@@ -36,7 +36,7 @@ public class blockScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(particleScaler);
+	//	Debug.Log(particleScaler);
 
 		if (scaleParticles) {
 			if(getParticleScaleOnce){

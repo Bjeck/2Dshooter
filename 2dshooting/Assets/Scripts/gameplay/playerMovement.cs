@@ -141,7 +141,7 @@ public class playerMovement : MonoBehaviour {
 	void FixedUpdate () {
 
 
-		//Debug.Log(Input.GetAxis("Lbumper"));
+		Debug.Log(rediColor+" "+redirectObjects[0].renderer.material.color);
 
 
 
@@ -440,8 +440,9 @@ public class playerMovement : MonoBehaviour {
 				canRedirect = true;
 				redirectLight.intensity = 2;
 				foreach(GameObject g in redirectObjects){
-					g.renderer.material.color = rediColor;
+					g.renderer.material.color = new Color(216,75,0);
 				}
+																		//redirect.instance.CanRedirectMore();
 				//Redirecttimer = 12;
 			}
 			else{
@@ -481,6 +482,7 @@ public class playerMovement : MonoBehaviour {
 			StartCoroutine(Redirect(goal.transform.position));	
 			if(!sS.inMenu)
 			RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
+		//	redirect.instance.CanRedirectLess();
 			//canRedirect = false;
 		}
 
