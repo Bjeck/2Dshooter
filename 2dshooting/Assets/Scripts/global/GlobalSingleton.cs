@@ -4,6 +4,7 @@ using System.Collections;
 public class GlobalSingleton : MonoBehaviour {
 
 	public bool inMenu = true;
+	public bool isPlayingForReal = true;
 	public bool duringStartUp = false;
 
 	private static GlobalSingleton _instance;

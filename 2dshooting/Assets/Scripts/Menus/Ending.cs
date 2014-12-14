@@ -6,6 +6,8 @@ public class Ending : MonoBehaviour {
 
 	public bool canEnd = false;
 	public bool hasEnded = false;
+	public GameObject redirectObj;
+
 
 	// Use this for initialization
 	void Start () {
@@ -39,6 +41,7 @@ public class Ending : MonoBehaviour {
 	}
 
 	public void RestartGame(){
+		redirectObj.GetComponent<redirect>().Reset();
 		Application.LoadLevel (Application.loadedLevel);
 		Time.timeScale = 1;
 	}

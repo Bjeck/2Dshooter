@@ -71,15 +71,17 @@ public class playerMovement : MonoBehaviour {
 
 	//redirect
 	GameObject goal;
-	public bool canRedirect = true;
-	public float RedirectCounter;
-	public float redirectCoolCurrentGoal = 12;
+//	public bool canRedirect = true;
+//	public float RedirectCounter;
+//	public float redirectCoolCurrentGoal = 12;
 	public ParticleSystem redirectParticles;
 	public AudioSource redirectSound;
 	public bool redButtonDown = false;
 	public Light redirectLight;
 	public List<GameObject> redirectObjects = new List<GameObject>();
-	Color rediColor = new Color(216,75,0);
+	Color rediColor = new Color((216f/255f),(75f/255f),0f);
+	public GameObject redirectObj;
+	redirect rediScript;
 
 	//Texts:
 	GameObject blockTextObj;
@@ -105,7 +107,7 @@ public class playerMovement : MonoBehaviour {
 
 		transform.position = new Vector3 (-4f, 0f, -2f);
 	
-		RedirectCounter = redirectCoolCurrentGoal;
+//		RedirectCounter = redirectCoolCurrentGoal;
 		//targetLight = GetComponentInChildren<Light> ();
 		flashSound = targetLight.GetComponent<AudioSource> ();
 		flashOffSound = targetLight.GetComponent<AudioSource> ();
@@ -125,8 +127,8 @@ public class playerMovement : MonoBehaviour {
 		repellertext = repellerTextObj.GetComponent<TextMesh> ();
 		redirecttext = redirectTextObj.GetComponent<TextMesh> ();
 		redirectpcttext = redirectpcttextObj.GetComponent<TextMesh>();
-		Debug.Log(redirectpcttext.gameObject);
-		repellertext.text = "LB: Repeller";
+//		Debug.Log(redirectpcttext.gameObject);
+	//	repellertext.text = "LB: Repeller";
 
 
 		bBoxScript = blockBox.GetComponent<blockBoxManager> ();
@@ -136,20 +138,27 @@ public class playerMovement : MonoBehaviour {
 		camScript = Camera.main.GetComponent<camera> ();
 
 
+	//	redirectObj = GameObject.Find("redirectParticles");
+		rediScript = redirectObj.GetComponent<redirect>();
+
+
 	}
 	// Update is called once per frame
 	void FixedUpdate () {
 
 
-		Debug.Log(rediColor+" "+redirectObjects[0].renderer.material.color);
+//		Debug.Log(rediColor+" "+redirectObjects[0].renderer.material.color);
 
 
 
 
 		//bulletCounter += Time.deltaTime*0.3f;
 		bullets = bulletList.Count;
-		if(!sS.inMenu){
-			balltext.text = "Bullets: "+bullets;
+		if(sS.inMenu){
+			balltext.text = "RT Bullets: "+bullets;
+		}
+		else{
+			balltext.text = " ";
 		}
 
 
@@ -276,8 +285,12 @@ public class playerMovement : MonoBehaviour {
 //		Debug.Log(Input.GetAxis("Rbumper"));
 
 		if(!sS.inMenu){
-			blocktext.text = "Blocks: " + blockMan.GetAmountOfBlocksInMiddle();
+			blocktext.text = "";
 		}
+		else{
+			blocktext.text = "LT Blocks: " + blockMan.GetAmountOfBlocksInMiddle();
+		}
+
 		//BLOCK GRABBING
 		if (Input.GetAxis ("LTrigger") > 0 && !isBlockSpawning && blockMan.GetAmountOfBlocksInMiddle() > 0) {
 			isBlockSpawning = true;
@@ -423,19 +436,35 @@ public class playerMovement : MonoBehaviour {
 */
 	//	repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
 		//Debug.Log (repellerCoolDown);
-	/*	if(!sS.inMenu){
-			repellertext.text = "LB: Repeller";
+		if(!sS.inMenu){
+			repellertext.text = " ";
 		}
 		else{
 			repellertext.text = "LB: Repeller";
 		}
-*/
+
 
 
 	
 	// --------------------------------------------------- ReDIRECT
 
-		if(!sS.inMenu){
+
+		if(rediScript.CanRedirect()){
+			redirectLight.intensity = 2;
+			foreach(GameObject g in redirectObjects){
+				g.renderer.material.color = rediColor;
+			}
+		}
+		else{
+			redirectLight.intensity = 0;
+			foreach(GameObject g in redirectObjects){
+				g.renderer.material.color = Color.black;
+			}
+		}
+
+
+
+		/*if(!sS.inMenu){
 			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
 				canRedirect = true;
 				redirectLight.intensity = 2;
@@ -457,31 +486,34 @@ public class playerMovement : MonoBehaviour {
 			canRedirect = true;
 			redirectLight.intensity = 0;
 		}
+*/
+	///	float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
 
-		float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
-
-		if(!sS.inMenu){
-			if (canRedirect) {
-				redirecttext.text = "RB! "+RedirectCounter+ "/"+redirectCoolCurrentGoal;
-				redirectpcttext.text = ""+pct+"%";
+		if(sS.inMenu){
+			if (rediScript.CanRedirect()) {
+			redirecttext.text = "RB! "+rediScript.RedirectCounter+ "/"+rediScript.redirectCoolCurrentGoal;
+			redirectpcttext.text = ""+rediScript.Redpct+"%";
 				redirecttext.color = rediColor;
 				redirectpcttext.color = rediColor;
 			}
 			else{
-				redirecttext.text = "    "+RedirectCounter+ "/"+redirectCoolCurrentGoal;
-				redirectpcttext.text = ""+pct+"%";
+			redirecttext.text = "    "+rediScript.RedirectCounter+ "/"+rediScript.redirectCoolCurrentGoal;
+			redirectpcttext.text = ""+rediScript.Redpct+"%";
 				redirecttext.color = Color.red;
 				redirectpcttext.color = Color.red;
 			}
 		}
+		else{
+			redirecttext.text = " ";
+		}
 		
-		if (Input.GetAxis ("Rbumper") > 0 && canRedirect && !redButtonDown) {
+		if (Input.GetAxis ("Rbumper") > 0 && rediScript.CanRedirect() && !redButtonDown) {
 			//Debug.Log("redirect");
 			redButtonDown = true;
 			camScript.SubtractFromIntensity(1f);
 			StartCoroutine(Redirect(goal.transform.position));	
-			if(!sS.inMenu)
-			RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
+		//	if(!sS.inMenu)
+		//	RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
 		//	redirect.instance.CanRedirectLess();
 			//canRedirect = false;
 		}
@@ -517,7 +549,7 @@ public class playerMovement : MonoBehaviour {
 		if(!sS.inMenu)
 			timerS.bulletCountdown += bulletCountdownAdder;
 
-		redirectCoolCurrentGoal++;
+		rediScript.redirectCoolCurrentGoal++;
 		//bulletCounter++;
 		blockAdder++;
 	}
@@ -526,7 +558,7 @@ public class playerMovement : MonoBehaviour {
 	public void RemoveBullet(GameObject b){
 		bulletList.Remove (b);
 		Destroy(b);
-		redirectCoolCurrentGoal--;
+		rediScript.redirectCoolCurrentGoal--;
 	}
 
 
@@ -604,9 +636,8 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 		//Redirecttimer = redirectCoolInitial;
-		redirectParticles.Play ();
+		rediScript.Redirect ();
 
-		redirectSound.Play ();
 	//	StartCoroutine(redirectCooldown());
 		yield return 0;
 	}

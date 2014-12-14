@@ -16,6 +16,7 @@ public class blockScript : MonoBehaviour {
 	Vector3 OriginalParticleScale;
 	bool scaleParticles = false;
 	bool getParticleScaleOnce = false;
+	GameObject redirectObj;
 
 	public GameObject blockManager;
 
@@ -29,9 +30,10 @@ public class blockScript : MonoBehaviour {
 		camScript = Camera.main.GetComponent<camera> ();
 		maxDurability = durability;
 		blockParticles = GetComponentInChildren<ParticleSystem> ();
-		Debug.Log (blockParticles);
+//		Debug.Log (blockParticles);
 		blockParticles.startSize = 0.0f;
 		OriginalParticleScale = blockParticles.transform.localScale;
+		redirectObj = GameObject.Find("redirectParticles");
 	}
 	
 	// Update is called once per frame
@@ -69,7 +71,7 @@ public class blockScript : MonoBehaviour {
 			blockHitSound.Play ();
 			//if(!playerS.canRedirect){ //redirect charge up
 				//playerS.Redirecttimer--;
-				playerS.RedirectCounter++;
+			redirectObj.GetComponent<redirect>().RedirectCounter++;
 			//}
 
 			durability--;
