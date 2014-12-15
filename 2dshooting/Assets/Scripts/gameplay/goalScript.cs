@@ -28,7 +28,7 @@ public class goalScript : MonoBehaviour {
 
 	//	Debug.Log ("From goal: " + singleton.activeSelf + " " + singleton.activeInHierarchy + " " + this.gameObject);
 		if(!sS.inMenu && this.gameObject != null){
-			scoreText.text = "Score: " + score;
+			scoreText.text = "" + score;
 		}
 	}
 

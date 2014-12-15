@@ -42,8 +42,10 @@ public class redirect : MonoBehaviour {
 	public float Redpct;
 	public GameObject particleSystemHolder;
 	List<ParticleSystem> redirectLights = new List<ParticleSystem>();
+	int activeLights;
 
 	Color readyColor = new Color((216f/255f),(75f/255f),0f);
+	Color chargingColor = new Color (255, 255, 255);
 
 
 	public List<GameObject> lights = new List<GameObject>();
@@ -75,6 +77,7 @@ public class redirect : MonoBehaviour {
 	void Update () {
 //		Debug.Log(curEnume);
 		CheckLights();
+		ChargingUpLight ();
 		//figure out when to call it. I only need to call it when redirect thing changes.
 	//s	 Redpct
 	
@@ -128,7 +131,7 @@ public class redirect : MonoBehaviour {
 			lights[i].SetActive(true);
 		}
 		*/
-		Debug.Log(lightThatShouldBeActive+"   "+Redpct/100+"   "+(int)Redpct/100);
+//		Debug.Log(lightThatShouldBeActive+"   "+Redpct/100+"   "+(int)Redpct/100);
 
 	/*	int activeLights = 0;
 		foreach(GameObject g in lights){
@@ -139,7 +142,7 @@ public class redirect : MonoBehaviour {
 			}
 		}*/
 
-		int activeLights = 0;
+		activeLights = 0;
 		foreach(ParticleSystem p in redirectLights){
 			if(p.gameObject != null){
 				if(p.startColor == readyColor){
@@ -171,10 +174,30 @@ public class redirect : MonoBehaviour {
 			}
 
 		}
-
-
 //		Debug.Log(diff+"    "+lightThatShouldBeActive+" "+" "+activeLights+" "+RedirectCounter+" "+redirectCoolCurrentGoal);
 	}
+
+
+
+
+	public void ChargingUpLight(){
+		if (curEnume <= lights.Count) {
+			if(lights[curEnume] != null){
+				if(activeLights != 0){
+					redirectLights[curEnume].startColor = new Color((((Redpct-100)/activeLights)*2.55f)/chargingColor.r,
+					                                                (((Redpct-100)/activeLights)*2.55f)/chargingColor.g,
+					                                                (((Redpct-100)/activeLights)*2.55f)/chargingColor.b);
+				}
+				else if(activeLights == 0){
+					redirectLights[curEnume].startColor = new Color((((Redpct*2.55f))/chargingColor.r),
+					                                                (((Redpct*2.55f))/chargingColor.g),
+					                                                (((Redpct*2.55f))/chargingColor.b));
+				}
+			}
+		}
+	}
+
+
 
 
 	public void CanRedirectMore(){
@@ -183,10 +206,6 @@ public class redirect : MonoBehaviour {
 				//Debug.Log("MORE "+lights[curEnume]);
 				redirectLights[curEnume].startColor = readyColor;
 
-				//Do stuff with it here, as it's charging. 
-				//When done, switch the curEnume up in the activeLights, thing, I guess.
-
-			//	lights [curEnume].SetActive (true);
 			}
 			curEnume++;
 		}
@@ -246,20 +265,6 @@ public class redirect : MonoBehaviour {
 	//	Debug.Log("RESET "+redirectLights.Count+" "+lights.Count);
 
 	}
-
-	/*
-
-	 */
-
-
-
-//REDIRECTING
-
-
-
-
-
-
 
 
 }
