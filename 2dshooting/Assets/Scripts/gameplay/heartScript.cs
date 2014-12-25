@@ -51,14 +51,15 @@ public class heartScript : MonoBehaviour {
 	
 	
 	void OnCollisionEnter(Collision c){
-		if (c.gameObject.tag == "ball") {
+		giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.0f,0.18f,0.1f));
+		if (c.gameObject.tag == "ball" && GlobalSingleton.instance.isPlayingForReal) {
 			life--;		
 
 			lifeParticles[currentlyUnlitParticles].startColor = Color.black;
 			currentlyUnlitParticles++;
-			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.0f,0.18f,0.1f));
 
-			if(life <= 0){
+
+			if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
 				endingObject.GetComponent<Ending>().EndGame();
 			}
 		}

@@ -55,13 +55,13 @@ public class giantParticle : MonoBehaviour {
 		//	Debug.Log ("CHANGE");
 			globalBackgroundParticles.startColor = inpCol;
 			//globalBackgroundParticles
-			StartCoroutine (WaitForStart ());
+			StartCoroutine (WaitASecondBeforeResettingColor ());
 		}
 	}
 
 
 	
-	IEnumerator WaitForStart(){
+	IEnumerator WaitASecondBeforeResettingColor(){
 		float t = 0;
 		while (t<0.5) {
 			t += Time.deltaTime;
@@ -74,8 +74,13 @@ public class giantParticle : MonoBehaviour {
 	}
 
 
-	public void SetEmissionRate(int f){
-		globalBackgroundParticles.emissionRate = f;
+	public void SetEmissionRate(int i){
+		globalBackgroundParticles.emissionRate = i;
+	}
+
+	public void SetParticleSpeed(int f){
+		globalBackgroundParticles.startSpeed = (float)f/4.0f;
+		globalBackgroundParticles.startLifetime = (float)f/40f+1f;
 	}
 
 

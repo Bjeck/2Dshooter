@@ -69,7 +69,7 @@ public class goalScript : MonoBehaviour {
 			ScoreSound.volume = 1;
 
 			ScoreSound.PlayOneShot (scoreSoundClip);
-			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.6f,0.18f,0.04f));
+			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.6f,0.18f,0.06f));
 
 		}
 	}
@@ -83,6 +83,10 @@ public class goalScript : MonoBehaviour {
 		}
 		yield return 0;
 
+	}
+
+	public void SetParticleSpeed(int f){
+		scoreParticles.startSpeed = ((float)f*0.25f)+10f;
 	}
 
 
