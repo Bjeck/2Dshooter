@@ -49,13 +49,16 @@ public class timerScript : MonoBehaviour {
 			transform.position = new Vector3(-2.43f,transform.position.y,transform.position.z);
 		}
 
-		if (bulletCountdown < 6f && !warningSystem.isPlaying) {
+		if (bulletCountdown < 6f){ //&& !warningSystem.isPlaying) {
+			giantParticle.instance.ChangeBackgroundColor(new Color(0.9f,0.0f,0f,0.2f));
+			giantParticle.instance.globalBackgroundParticles.gravityModifier = 4f;
 			warningSystem.Play ();
 			warningSystem.startSize = 0;
 			warningSystem.startSpeed = 5f;
 		}
-		else if(bulletCountdown > 6f && warningSystem.isPlaying){
+		else if(bulletCountdown > 6f){ //&& warningSystem.isPlaying){
 			warningSystem.Stop ();
+			giantParticle.instance.globalBackgroundParticles.gravityModifier = 0f;
 		}
 
 		if (warningSystem.isPlaying) {
@@ -66,6 +69,22 @@ public class timerScript : MonoBehaviour {
 			//parSize -= parSize;
 			//Debug.Log(parSize);
 			warningSystem.startSize = parSize;
+
+			int rand = Random.Range(0,3);
+			if(rand == 0){
+				warningSystem.startColor = Color.red;
+			}
+			else if(rand == 1){
+				warningSystem.startColor = Color.yellow;
+			}
+			else if(rand == 2){
+				warningSystem.startColor = Color.cyan;
+			}
+			else if(rand == 3){
+				warningSystem.startColor = Color.magenta;
+			}
+
+
 
 			parSpeed = bulletCountdown;
 			parSpeed /= 6;

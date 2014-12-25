@@ -8,10 +8,14 @@ public class goalScript : MonoBehaviour {
 	GlobalSingleton sS;
 	
 	TextMesh scoreText;
-	int score = 0;
+	public int score = 0;
 	public AudioSource ScoreSound;
 	public AudioClip scoreSoundClip;
 	public float pitch;
+
+	public ParticleSystem goalSystem;
+	public ParticleSystem scoreParticles;
+
 
 	// Use this for initialization
 	void Start () {
@@ -19,6 +23,17 @@ public class goalScript : MonoBehaviour {
 		sS = singleton.GetComponent<GlobalSingleton> ();
 
 		scoreText = GetComponentInChildren<TextMesh> ();
+
+		if (!GlobalSingleton.instance.inMenu) {
+			scoreParticles.loop = true;	
+			scoreParticles.Play();
+		}
+		else{
+			scoreParticles.loop = false;
+			scoreParticles.Play();
+		}
+
+
 	}
 	
 	// Update is called once per frame
@@ -27,9 +42,14 @@ public class goalScript : MonoBehaviour {
 		pitch = ScoreSound.pitch;
 
 	//	Debug.Log ("From goal: " + singleton.activeSelf + " " + singleton.activeInHierarchy + " " + this.gameObject);
-		if(!sS.inMenu && this.gameObject != null){
-			scoreText.text = "" + score;
-		}
+		//if(!sS.inMenu && this.gameObject != null){
+		//	scoreText.text = "" + score;
+		//}
+
+	//	goalSystem.maxParticles = score*4+100;
+		//giantParticle.maxParticles = score;
+		scoreParticles.emissionRate = score;
+		giantParticle.instance.SetEmissionRate((score*4)+200);
 	}
 
 
@@ -49,6 +69,8 @@ public class goalScript : MonoBehaviour {
 			ScoreSound.volume = 1;
 
 			ScoreSound.PlayOneShot (scoreSoundClip);
+			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.6f,0.18f,0.04f));
+
 		}
 	}
 

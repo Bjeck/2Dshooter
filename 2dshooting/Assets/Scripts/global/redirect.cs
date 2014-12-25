@@ -37,6 +37,7 @@ public class redirect : MonoBehaviour {
 	public bool canRedirect = true;
 	public float RedirectCounter = 0;
 	public float redirectCoolCurrentGoal = 12;
+	public int numberOfRedirectsAvailable = 0;
 	ParticleSystem redirectParticles;
 	AudioSource redirectSound;
 	public float Redpct;
@@ -78,19 +79,47 @@ public class redirect : MonoBehaviour {
 //		Debug.Log(curEnume);
 		CheckLights();
 		ChargingUpLight ();
+		CheckRedirect ();
 		//figure out when to call it. I only need to call it when redirect thing changes.
 	//s	 Redpct
-	
+	}
+
+
+	void CheckRedirect(){
+		Redpct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
+		if(!sS.inMenu){
+			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
+				canRedirect = true;
+				RedirectCounter = 0;
+				numberOfRedirectsAvailable++;
+			}
+			else{
+				canRedirect = false;
+			}
+		}
+		else{
+			canRedirect = true;
+		}
 	}
 
 
 
 	public bool CanRedirect(){
+		if (numberOfRedirectsAvailable > 0) {
+			canRedirect = true;	
+		}
+		else{
+			canRedirect = false;
+		}
+
+		return canRedirect;
+	}
+
+	/*
+	public bool CanRedirect(){
 		bool canRedi = false;
 		if(!sS.inMenu){
 			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
-
-
 				canRedi = true;
 			}
 			else{
@@ -106,12 +135,13 @@ public class redirect : MonoBehaviour {
 		canRedirect = canRedi;
 		return canRedi;
 	}
-
+*/
 
 	public void Redirect(){
-		RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
+		//RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
 		redirectParticles.Play();
 		redirectSound.Play ();
+		numberOfRedirectsAvailable--;
 	}
 
 
@@ -121,7 +151,8 @@ public class redirect : MonoBehaviour {
 		int lightThatShouldBeActive = 0;
 	//	int debugger = 
 
-		lightThatShouldBeActive = (int)(Redpct/100);
+		//lightThatShouldBeActive = (int)(Redpct/100);
+		lightThatShouldBeActive = numberOfRedirectsAvailable;
 	//	for(int i = 0;i<Redpct;i+=100){
 		//	lightThatShouldBeActive++;
 //			Debug.Log("ENUM "+i+" "+lightThatShouldBeActive);
@@ -154,12 +185,12 @@ public class redirect : MonoBehaviour {
 
 
 		int diff = 0;
-		if(lightThatShouldBeActive == activeLights){
+		if(numberOfRedirectsAvailable == activeLights){
 			//DO NOTHING, ALL LIGHTS ARE GREAT
 		}
 		else{
 			//Debug.Log("THERE'S DIFF");
-			diff = lightThatShouldBeActive - activeLights;
+			diff = numberOfRedirectsAvailable - activeLights;
 			if(diff > 0){
 			//	Debug.Log("DIFF MORE");
 				for(int i = 0;i<diff;i++){
@@ -181,18 +212,19 @@ public class redirect : MonoBehaviour {
 
 
 	public void ChargingUpLight(){
+		//Debug.Log ("CHARGING  "+curEnume+" "+redirectLights[curEnume].startColor);
 		if (curEnume <= lights.Count) {
 			if(lights[curEnume] != null){
-				if(activeLights != 0){
+				/*if(activeLights != 0){
 					redirectLights[curEnume].startColor = new Color((((Redpct-100)/activeLights)*2.55f)/chargingColor.r,
 					                                                (((Redpct-100)/activeLights)*2.55f)/chargingColor.g,
 					                                                (((Redpct-100)/activeLights)*2.55f)/chargingColor.b);
-				}
-				else if(activeLights == 0){
+				}*/
+				//else if(activeLights == 0){
 					redirectLights[curEnume].startColor = new Color((((Redpct*2.55f))/chargingColor.r),
 					                                                (((Redpct*2.55f))/chargingColor.g),
 					                                                (((Redpct*2.55f))/chargingColor.b));
-				}
+				//}
 			}
 		}
 	}

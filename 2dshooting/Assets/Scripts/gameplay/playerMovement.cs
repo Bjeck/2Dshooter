@@ -38,6 +38,7 @@ public class playerMovement : MonoBehaviour {
 	public float bulletCountdownAdder = 5;
 	//float bulletRestTimer;
 	public List<GameObject> bulletList = new List<GameObject> ();
+	public int totalBulletCount = 0;
 	Vector3 lookVector;
 	public GameObject blockManagerObject;
 	blockManager blockMan;
@@ -462,33 +463,6 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 
-
-
-		/*if(!sS.inMenu){
-			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
-				canRedirect = true;
-				redirectLight.intensity = 2;
-				foreach(GameObject g in redirectObjects){
-					g.renderer.material.color = new Color(216,75,0);
-				}
-																		//redirect.instance.CanRedirectMore();
-				//Redirecttimer = 12;
-			}
-			else{
-				canRedirect = false;
-				redirectLight.intensity = 0;
-				foreach(GameObject g in redirectObjects){
-					g.renderer.material.color = Color.black;
-				}
-			}
-		}
-		else{
-			canRedirect = true;
-			redirectLight.intensity = 0;
-		}
-*/
-	///	float pct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
-
 		if(sS.inMenu){
 			if (rediScript.CanRedirect()) {
 			redirecttext.text = "RB! "+rediScript.RedirectCounter+ "/"+rediScript.redirectCoolCurrentGoal;
@@ -504,7 +478,8 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 		else{
-			redirecttext.text = " ";
+			//redirecttext.text = " ";
+
 		}
 		
 		if (Input.GetAxis ("Rbumper") > 0 && rediScript.CanRedirect() && !redButtonDown) {
@@ -524,6 +499,12 @@ public class playerMovement : MonoBehaviour {
 
 
 	} //end update
+
+
+
+
+
+
 
 
 
@@ -552,6 +533,7 @@ public class playerMovement : MonoBehaviour {
 		rediScript.redirectCoolCurrentGoal++;
 		//bulletCounter++;
 		blockAdder++;
+		totalBulletCount++;
 	}
 
 
@@ -622,7 +604,7 @@ public class playerMovement : MonoBehaviour {
 	public IEnumerator Redirect(Vector3 targetPos){
 		//Vector3 goalPos = goal.transform.position;
 		int i = 10;
-		foreach (GameObject g in bulletList) { // I figured out the bug. It's because a bullet can be deleted during one of these frames.
+		foreach (GameObject g in bulletList) { // I figured out the bug. It's because a bullet can be deleted during one of these frames. AH I KNOW. make boolean. if this is true, wait a few frames with destroy bullet. :)
 			if(g != null){
 				Vector3 vectorToTarget = targetPos - g.transform.position;
 				g.rigidbody.velocity = vectorToTarget;
