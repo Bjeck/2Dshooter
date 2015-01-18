@@ -3,32 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class redirect : MonoBehaviour {
-/*	private static redirect _instance;
-	public static redirect instance 
-	{
-		get
-		{
-			if(_instance == null)
-			{
-				_instance = GameObject.FindObjectOfType<redirect>();
-				
-				DontDestroyOnLoad(_instance.gameObject);
-			}
-			return _instance;
-		}
-	}
-	void Awake(){
-		if (_instance == null) {
-			_instance = this;
-			DontDestroyOnLoad( this);
-		}
-		else{
-			if(this != _instance){
-				Destroy(this.gameObject);
-			}
-		}
-	}
-*/
 
 	public GameObject singleton;
 	GlobalSingleton sS;
@@ -66,9 +40,6 @@ public class redirect : MonoBehaviour {
 			p.startColor = Color.black;
 		}
 
-	//	redirectLights.AddRange();
-
-//		Debug.Log(particleSystemHolder+"   "+redirectLights.Count+" "+lights.Count+" "+tempList.Length);
 		if(sS.inMenu)
 			RedirectCounter = redirectCoolCurrentGoal;// ????
 
@@ -76,18 +47,15 @@ public class redirect : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-//		Debug.Log(curEnume);
 		CheckLights();
 		ChargingUpLight ();
 		CheckRedirect ();
-		//figure out when to call it. I only need to call it when redirect thing changes.
-	//s	 Redpct
 	}
 
 
 	void CheckRedirect(){
 		Redpct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
-		if(!sS.inMenu){
+	//	if(!sS.inMenu){
 			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
 				canRedirect = true;
 				RedirectCounter = 0;
@@ -96,46 +64,28 @@ public class redirect : MonoBehaviour {
 			else{
 				canRedirect = false;
 			}
-		}
-		else{
-			canRedirect = true;
-		}
+		//}
+	//	else{
+		//	canRedirect = true;
+		//}
 	}
 
 
 
 	public bool CanRedirect(){
-		if (numberOfRedirectsAvailable > 0) {
-			canRedirect = true;	
-		}
-		else{
-			canRedirect = false;
-		}
-
-		return canRedirect;
-	}
-
-	/*
-	public bool CanRedirect(){
-		bool canRedi = false;
-		if(!sS.inMenu){
-			if(RedirectCounter >= redirectCoolCurrentGoal){ //redirect is available again.
-				canRedi = true;
+		//if (sS.inMenu) {
+		//	return canRedirect;
+		//}
+		//else{
+			if (numberOfRedirectsAvailable > 0) {
+				canRedirect = true;	
 			}
 			else{
-				canRedi = false;
+				canRedirect = false;
 			}
-		}
-		else{
-			canRedi = true;
-		}
-		Redpct = (int)((RedirectCounter / redirectCoolCurrentGoal)*100);
-
-//		Debug.Log(canRedi);
-		canRedirect = canRedi;
-		return canRedi;
+		//}
+		return canRedirect;
 	}
-*/
 
 	public void Redirect(){
 		//RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
@@ -147,31 +97,10 @@ public class redirect : MonoBehaviour {
 
 
 	void CheckLights(){
-		//Debug.Log("HERE "+lights.Count);
+
 		int lightThatShouldBeActive = 0;
-	//	int debugger = 
-
-		//lightThatShouldBeActive = (int)(Redpct/100);
 		lightThatShouldBeActive = numberOfRedirectsAvailable;
-	//	for(int i = 0;i<Redpct;i+=100){
-		//	lightThatShouldBeActive++;
-//			Debug.Log("ENUM "+i+" "+lightThatShouldBeActive);
-	//	}
 
-		/*for(int i= 0;i<lightThatShouldBeActive;i++){
-			lights[i].SetActive(true);
-		}
-		*/
-//		Debug.Log(lightThatShouldBeActive+"   "+Redpct/100+"   "+(int)Redpct/100);
-
-	/*	int activeLights = 0;
-		foreach(GameObject g in lights){
-			if(g != null){
-				if(g.activeInHierarchy == true){
-					activeLights++;
-				}
-			}
-		}*/
 
 		activeLights = 0;
 		foreach(ParticleSystem p in redirectLights){
@@ -181,8 +110,6 @@ public class redirect : MonoBehaviour {
 				}
 			}
 		}
-
-
 
 		int diff = 0;
 		if(numberOfRedirectsAvailable == activeLights){
@@ -205,7 +132,6 @@ public class redirect : MonoBehaviour {
 			}
 
 		}
-//		Debug.Log(diff+"    "+lightThatShouldBeActive+" "+" "+activeLights+" "+RedirectCounter+" "+redirectCoolCurrentGoal);
 	}
 
 
@@ -215,16 +141,9 @@ public class redirect : MonoBehaviour {
 		//Debug.Log ("CHARGING  "+curEnume+" "+redirectLights[curEnume].startColor);
 		if (curEnume <= lights.Count) {
 			if(lights[curEnume] != null){
-				/*if(activeLights != 0){
-					redirectLights[curEnume].startColor = new Color((((Redpct-100)/activeLights)*2.55f)/chargingColor.r,
-					                                                (((Redpct-100)/activeLights)*2.55f)/chargingColor.g,
-					                                                (((Redpct-100)/activeLights)*2.55f)/chargingColor.b);
-				}*/
-				//else if(activeLights == 0){
 					redirectLights[curEnume].startColor = new Color((((Redpct*2.55f))/chargingColor.r),
 					                                                (((Redpct*2.55f))/chargingColor.g),
 					                                                (((Redpct*2.55f))/chargingColor.b));
-				//}
 			}
 		}
 	}
@@ -257,12 +176,7 @@ public class redirect : MonoBehaviour {
 
 
 
-
-
-
-
 	public void Reset(){
-
 		if(sS.inMenu){
 
 			RedirectCounter = redirectCoolCurrentGoal;

@@ -3,10 +3,11 @@ using System.Collections;
 
 public class blockBoxManager : MonoBehaviour {
 
-	float counter = 0f;
 	bool canPlaceBlock = false;
 	public bool isInTopCorner = false;
-	bool isOutOfBounds = false;
+	public bool isOutOfBounds = false;
+
+	public GameObject CurrentBlockofEvaluation;
 
 
 	// Use this for initialization
@@ -17,7 +18,10 @@ public class blockBoxManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-	//	Debug.Log ("topcorner: " + isInTopCorner + " outofboungs: " + isOutOfBounds + "  canplace: " + canPlaceBlock);
+	//	Debug.Log ( + " outofboungs: " + isOutOfBounds + "  canplace: " + canPlaceBlock);
+		if (CurrentBlockofEvaluation != null) {
+				//Debug.Log (CurrentBlockofEvaluation + " canplace: " + canPlaceBlock+" topcorner: " + isInTopCorner);	
+		}
 
 		if (isInTopCorner && !isOutOfBounds) {
 			canPlaceBlock = true;
@@ -25,17 +29,16 @@ public class blockBoxManager : MonoBehaviour {
 		else{
 			canPlaceBlock = false;
 		}
-	
 	}
 
 
 	public void SetInTopCorner(bool b){
-		counter++;
 		//Debug.Log("GETTING "+b+" "+counter);
 		isInTopCorner = b;
 	}
 
 	public void SetOutOfBounds(bool b){
+//		Debug.Log ("OUT OF BOUNDS SET: " + b);
 		isOutOfBounds = b;
 	}
 

@@ -31,7 +31,7 @@ public class antiblockBox : MonoBehaviour {
 	}*/
 	void OnTriggerStay(Collider col){
 		if (col.gameObject.tag == "blockUnplaced") {
-			blockboxManagerObject.GetComponent<blockBoxManager>().SetInTopCorner(false);
+		//	blockboxManagerObject.GetComponent<blockBoxManager>().SetInTopCorner(false);
 			//cannotPlaceBlock = true;
 		}
 	}

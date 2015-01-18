@@ -2,13 +2,14 @@
 using System.Collections;
 
 public class edgeBlockBox : MonoBehaviour {
-	
-	public bool cannotPlaceBlock = false;
+
 	
 	public GameObject blockboxManagerObject;
+	blockBoxManager blboxman;
 	
 	// Use this for initialization
 	void Start () {
+		blboxman = blockboxManagerObject.GetComponent<blockBoxManager> ();
 	}
 	
 	// Update is called once per frame
@@ -17,29 +18,36 @@ public class edgeBlockBox : MonoBehaviour {
 	}
 	
 	
-	/*void OnTriggerEnter(Collider col){
-		Debug.Log ("TRIGGER"+col.name);
+	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "blockUnplaced") {
-			cannotPlaceBlock = true;
+			Debug.Log("ENTERING TRIGGER");
+		}
+
+		//Debug.Log ("TRIGGER"+col.name);
+		if (col.gameObject == blboxman.CurrentBlockofEvaluation){
+			Debug.Log("OUT OF BOUNDS");
+			blboxman.SetOutOfBounds(true);
 		}
 	}
 	
 	void OnTriggerExit(Collider col){
 		if (col.gameObject.tag == "blockUnplaced") {
-			cannotPlaceBlock = false;
+			Debug.Log("EXITING TRIGGER");
 		}
-	}*/
+
+		if (col.gameObject == blboxman.CurrentBlockofEvaluation){
+			Debug.Log("IN BOUNDS");
+			blboxman.SetOutOfBounds(false);
+		}
+	}
+/*
 	void OnTriggerStay(Collider col){
-		if (col.gameObject.tag == "blockUnplaced") {
-			blockboxManagerObject.GetComponent<blockBoxManager>().SetOutOfBounds(true);
-			//cannotPlaceBlock = true;
+		if (col.gameObject == blboxman.CurrentBlockofEvaluation){
+			Debug.Log("OUT OF BOUNDS");
+			blboxman.SetOutOfBounds(true);
 		}
 	}
-	
-	
-	public bool CannotPlaceBlock(){
-		return cannotPlaceBlock;
-	}
+*/
 	
 	
 	

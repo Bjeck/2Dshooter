@@ -96,11 +96,13 @@ public class bulletScript : MonoBehaviour {
 	}
 
 
-	void OnCollisionEnter(){
+	void OnCollisionEnter(Collision col){
 	//	renderer.material.color = Color.black;
 		if(ownParticles != null){
 			ownParticles.startColor = Color.black;
 			StartCoroutine (WaitForStart ());
+			GameObject cPart = (GameObject)Instantiate(Resources.Load("collisionParticles",typeof(GameObject)));
+			cPart.transform.position = col.contacts[0].point;
 		}
 	}
 

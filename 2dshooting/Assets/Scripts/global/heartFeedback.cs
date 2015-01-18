@@ -4,6 +4,7 @@ using System.Collections;
 public class heartFeedback : MonoBehaviour {
 
 	public ParticleSystem heartFeedbackSys;
+	public AudioSource[] heartHitSounds;
 	float size;
 
 	// Use this for initialization
@@ -19,6 +20,12 @@ public class heartFeedback : MonoBehaviour {
 	void OnCollisionEnter(Collision c){
 		if(c.gameObject.tag == "ball"){
 			heartFeedbackSys.Stop ();
+
+			int rand = Random.Range(0,1);
+			heartHitSounds[rand].Play ();
+
+
+
 			StartCoroutine (WaitForStart ());
 		}
 	}

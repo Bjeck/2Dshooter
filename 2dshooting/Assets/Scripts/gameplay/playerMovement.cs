@@ -59,6 +59,7 @@ public class playerMovement : MonoBehaviour {
 	public GameObject blockInMiddle;
 	public AudioSource blockPlaceSound;
 	public AudioSource blockPullSound;
+	public AudioSource blockErrorSound;
 
 	//Repeller
 	GameObject repeller;
@@ -118,7 +119,6 @@ public class playerMovement : MonoBehaviour {
 		ballTextObj = GameObject.Find ("ballText");
 		repellerTextObj = GameObject.Find ("repellerText");
 		redirectTextObj = GameObject.Find ("redirectText");
-
 
 		if(!sS.inMenu){
 			timerS = GameObject.Find ("bulletTimerText").GetComponent<timerScript> ();
@@ -301,6 +301,7 @@ public class playerMovement : MonoBehaviour {
 			blockPullSound.Play();
 			BlockS.ChangeParticlesSize(0.08f);
 			blockInstance.renderer.enabled = false;
+			bBoxScript.CurrentBlockofEvaluation = blockInstance;
 			//blockInstance.collider.isTrigger = true;
 
 		}
@@ -320,22 +321,11 @@ public class playerMovement : MonoBehaviour {
 			distanceToTarget *= 2f;
 
 			float scaler = Mathf.Clamp(distanceToTarget*1f,0.1f,1);
-
 			float lerpingSpeed = (1/distanceToTarget)+30f;
-
 
 			blockInstance.transform.position = new Vector3(Mathf.Lerp(blockInstance.transform.position.x,blockTempPos.x,lerpingSpeed*Time.deltaTime),
 			                                               Mathf.Lerp(blockInstance.transform.position.y,blockTempPos.y,lerpingSpeed*Time.deltaTime),blockTempPos.z);
-
-			//blockInstance.transform.position = blockTempPos;
-
-			//blockInstance.transform.rotation = Quaternion.Slerp(blockInstance.transform.rotation, q, Time.deltaTime * blockRotationSpeed);
 			blockInstance.transform.rotation = q;
-
-			//float scaler = Mathf.Clamp(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY"))*1.4f,0.1f,1);
-
-
-//			Debug.Log(distanceToTarget);
 			blockInstance.transform.localScale = new Vector3( scaler*0.3f,scaler*2.0f, 1f);
 
 			if(!bBoxScript.CanPlaceBlock()){
@@ -356,40 +346,26 @@ public class playerMovement : MonoBehaviour {
 				isBlockSpawning = false;
 				//Debug.Log("Tries to place block");
 
-
-				if(!bBoxScript.CanPlaceBlock()){
+				 
+				if(!bBoxScript.CanPlaceBlock()){ //  CANNOT PLACE BLOCK
 
 					//Debug.Log("can't place block");
 					blockMan.PlaceBlockBackInMiddle();
 					Destroy(blockInstance);
 					StartCoroutine(WaitToResetBlockBool());
 				//	bBoxScript.canPlaceBlock = false;
+					blockErrorSound.Play();
 					return;
 				}
-			/*	if(blockInstantPlaceTimer <= 0.5f){ //If it was an instant press
-					Vector3 vectorToGoal = goal.transform.position - blockInstance.transform.position;
-					float angleToGoal = Mathf.Atan2(vectorToGoal.y, vectorToGoal.x) * Mathf.Rad2Deg;
-					Quaternion q2 = Quaternion.AngleAxis(angleToGoal, Vector3.forward);
-					blockInstance.transform.rotation = q2;
-					//blockInstance.transform.localScale = new Vector3(0.3f,2.0f, 1f);
-					//blockInstance.transform.LookAt(goal.transform.position);
-				}
-*/
 
 				if(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")) == 0){
 					blockMan.PlaceBlockBackInMiddle();
 					Destroy(blockInstance);
-					//Debug.Log("from player"+bBoxScript.isInTopCorner);
 					StartCoroutine(WaitToResetBlockBool());
 
-					//Debug.Log("from player2"+bBoxScript.isInTopCorner);
-				//	blocksLeft++;
 					return;
 				}
-//				Debug.Log("Can place block");
-				//bBoxScript.canPlaceBlock = false;
-			//	blocksLeft--;
-				//blockInstance.collider.isTrigger = false;
+
 				Vector3 temp = blockInstance.transform.position; //Places the block in place.
 				temp.z += 2;
 				blockInstance.transform.position = temp;
@@ -400,6 +376,7 @@ public class playerMovement : MonoBehaviour {
 				blockPlaceSound.Play();
 				StartCoroutine(WaitToResetBlockBool());
 				BlockS.SpreadOutParticles();
+				bBoxScript.CurrentBlockofEvaluation = null;
 			}
 		}
 
@@ -625,13 +602,14 @@ public class playerMovement : MonoBehaviour {
 	}
 
 
-	IEnumerator WaitToResetBlockBool()
+	IEnumerator WaitToResetBlockBool() // Resets block boolean after block has been placed.
 	{
 		//returning 0 will make it wait 1 frame
 		yield return 0;
 		
 		//code goes here
 		bBoxScript.SetInTopCorner(false);
+		bBoxScript.SetOutOfBounds (false);
 		
 		
 	}
