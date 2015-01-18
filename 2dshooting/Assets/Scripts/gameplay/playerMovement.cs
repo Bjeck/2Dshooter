@@ -73,6 +73,7 @@ public class playerMovement : MonoBehaviour {
 
 	//redirect
 	GameObject goal;
+	goalScript goalScr;
 //	public bool canRedirect = true;
 //	public float RedirectCounter;
 //	public float redirectCoolCurrentGoal = 12;
@@ -105,7 +106,12 @@ public class playerMovement : MonoBehaviour {
 		sS = singleton.GetComponent<GlobalSingleton> ();
 
 		moveSound = GetComponent<AudioSource> ();
-		goal = GameObject.Find ("goal");
+		//goal = GameObject.Find ("goal");
+		goal = GameObject.FindGameObjectWithTag("goal");
+		if(!GlobalSingleton.instance.inMenu){
+			goalScr = goal.GetComponentInChildren<goalScript>();
+		}
+	
 
 		transform.position = new Vector3 (-4f, 0f, -2f);
 	
@@ -511,6 +517,14 @@ public class playerMovement : MonoBehaviour {
 		//bulletCounter++;
 		blockAdder++;
 		totalBulletCount++;
+		giantParticle.instance.SetParticleSpeed(bullets);
+		if(goal == null){
+			goal = GameObject.FindGameObjectWithTag("goal");
+			if(!GlobalSingleton.instance.inMenu){
+				goalScr = goal.GetComponentInChildren<goalScript>();
+			}
+		}
+		goalScr.SetParticleSpeed(bullets);
 	}
 
 
@@ -518,6 +532,8 @@ public class playerMovement : MonoBehaviour {
 		bulletList.Remove (b);
 		Destroy(b);
 		rediScript.redirectCoolCurrentGoal--;
+		giantParticle.instance.SetParticleSpeed(bullets);
+		goalScr.SetParticleSpeed(bullets);
 	}
 
 
