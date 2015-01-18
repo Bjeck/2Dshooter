@@ -522,9 +522,10 @@ public class playerMovement : MonoBehaviour {
 			goal = GameObject.FindGameObjectWithTag("goal");
 			if(!GlobalSingleton.instance.inMenu){
 				goalScr = goal.GetComponentInChildren<goalScript>();
+				goalScr.SetParticleSpeed(bullets);
 			}
 		}
-		goalScr.SetParticleSpeed(bullets);
+
 	}
 
 
@@ -533,7 +534,9 @@ public class playerMovement : MonoBehaviour {
 		Destroy(b);
 		rediScript.redirectCoolCurrentGoal--;
 		giantParticle.instance.SetParticleSpeed(bullets);
-		goalScr.SetParticleSpeed(bullets);
+		if(!GlobalSingleton.instance.inMenu){
+			goalScr.SetParticleSpeed(bullets);
+		}
 	}
 
 
