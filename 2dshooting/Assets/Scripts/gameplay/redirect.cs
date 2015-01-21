@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//This script controls how much the player can redirect, as well as showing this through the lights on the right side of the screen.
+
 public class redirect : MonoBehaviour {
 
 	public GameObject singleton;
@@ -18,6 +20,7 @@ public class redirect : MonoBehaviour {
 	public GameObject particleSystemHolder;
 	List<ParticleSystem> redirectLights = new List<ParticleSystem>();
 	int activeLights;
+	public ParticleSystem chargeFeedback;
 
 	Color readyColor = new Color((216f/255f),(75f/255f),0f);
 	Color chargingColor = new Color (255, 255, 255);
@@ -50,6 +53,7 @@ public class redirect : MonoBehaviour {
 		CheckLights();
 		ChargingUpLight ();
 		CheckRedirect ();
+		chargeFeedback.transform.position = redirectLights [curEnume].transform.position;
 	}
 
 

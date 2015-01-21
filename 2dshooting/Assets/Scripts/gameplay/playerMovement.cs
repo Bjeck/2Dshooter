@@ -156,7 +156,11 @@ public class playerMovement : MonoBehaviour {
 
 //		Debug.Log(rediColor+" "+redirectObjects[0].renderer.material.color);
 
-
+		if (GlobalSingleton.instance.isPaused) {
+			transform.position = transform.position;
+			transform.rigidbody.velocity = new Vector3(0,0,0);
+			return;		
+		}
 
 
 		//bulletCounter += Time.deltaTime*0.3f;

@@ -6,6 +6,7 @@ public class GlobalSingleton : MonoBehaviour {
 	public bool inMenu = true;
 	public bool isPlayingForReal = true;
 	public bool duringStartUp = false;
+	public bool isPaused = false;
 
 	private static GlobalSingleton _instance;
 

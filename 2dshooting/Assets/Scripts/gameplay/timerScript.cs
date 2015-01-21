@@ -42,6 +42,10 @@ public class timerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+
+		if (GlobalSingleton.instance.isPaused) {
+			return;		
+		}
 	
 		if(!lost){
 			bulletCountdown -= Time.fixedDeltaTime;
@@ -115,6 +119,7 @@ public class timerScript : MonoBehaviour {
 			//Debug.Log(parSize);
 			warningSystem.startSize = parSize;
 
+			//NOT USED ATM
 			int rand = Random.Range(0,3);
 			if(rand == 0){
 				warningSystem.startColor = Color.red;

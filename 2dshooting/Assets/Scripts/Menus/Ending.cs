@@ -7,12 +7,18 @@ public class Ending : MonoBehaviour {
 	public bool canEnd = false;
 	public bool hasEnded = false;
 	public bool SpaceEndedIt = false;
+	bool startButtonDown;
+
+
 	public GameObject redirectObj;
 	public List<TextMesh> endTexts = new List<TextMesh>();
+	public TextMesh pauseText;
+	public Light dirLight;
 
 	GameObject scoreObject;
 	GameObject Player;
 	GameObject globalTimer; 
+
 
 
 
@@ -33,7 +39,7 @@ public class Ending : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (hasEnded) {
-			if(Input.GetKey(KeyCode.Space)){
+			if(Input.GetKey(KeyCode.Space)){ //
 				RestartGame();
 			}
 		}
@@ -46,6 +52,22 @@ public class Ending : MonoBehaviour {
 				Time.timeScale = 1f;
 			}
 		}
+
+		if (GlobalSingleton.instance.isPaused && !startButtonDown) {
+			if(Input.GetAxis("Start") > 0){
+				UnPauseGame();
+				startButtonDown = true;
+			}
+		}
+		else{
+			if(Input.GetAxis("Start") > 0 && !startButtonDown){
+				PauseGame();
+				startButtonDown = true;
+			}
+		}
+		if (startButtonDown && Input.GetAxis ("Start") <= 0) {
+			startButtonDown = false;		
+		}
 	
 	}
 
@@ -55,7 +77,6 @@ public class Ending : MonoBehaviour {
 			if(!SpaceEndedIt){
 				ShowScoreText();
 			}
-
 
 			Time.timeScale = 0;
 			hasEnded = true;
@@ -82,11 +103,29 @@ public class Ending : MonoBehaviour {
 
 	}
 
-
-
 	public void RestartGame(){
 		redirectObj.GetComponent<redirect>().Reset();
 		Application.LoadLevel (Application.loadedLevel);
 		Time.timeScale = 1;
 	}
+
+
+
+	public void PauseGame(){
+		GlobalSingleton.instance.isPaused = true;
+		giantParticle.instance.SetPauseParticles (true);
+		pauseText.gameObject.SetActive(true);
+		dirLight.gameObject.SetActive (false);
+	}
+	
+	public void UnPauseGame(){
+		GlobalSingleton.instance.isPaused = false;
+		giantParticle.instance.SetPauseParticles (false);
+		pauseText.gameObject.SetActive(false);
+		dirLight.gameObject.SetActive (true);
+	}
+
+
+
+
 }

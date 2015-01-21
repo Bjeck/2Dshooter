@@ -44,8 +44,8 @@ public class MainMenu : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKey(KeyCode.Space)){
-			sS.inMenu = !sS.inMenu;
+		if(Input.GetKey(KeyCode.Space)){ //
+ 			sS.inMenu = !sS.inMenu;
 			endingObject.GetComponent<Ending>().SpaceEndedIt = true;
 			endingObject.GetComponent<Ending>().EndGame();
 

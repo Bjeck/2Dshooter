@@ -20,6 +20,8 @@ public class bulletScript : MonoBehaviour {
 	private float timerStart = 5f;
 	TrailRenderer trail;
 	GameObject bulletManager;
+	Vector3 Storeddirection;
+	bool isPaused = false;
 
 	bool starting = true;
 
@@ -46,6 +48,21 @@ public class bulletScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		if (GlobalSingleton.instance.isPaused) {
+			if(!isPaused){
+				Storeddirection = rigidbody.velocity;
+				rigidbody.velocity = new Vector3(0,0,0);
+				trail.time = Mathf.Infinity;
+			}
+			isPaused = true;
+			return;
+		}
+
+		if (isPaused) {
+			rigidbody.velocity = Storeddirection;	
+			isPaused = false;
+		}
+
 		rigidbody.velocity = constantSpeed * (rigidbody.velocity.normalized);
 
 

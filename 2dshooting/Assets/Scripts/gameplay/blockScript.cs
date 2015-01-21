@@ -19,7 +19,8 @@ public class blockScript : MonoBehaviour {
 	GameObject redirectObj;
 
 	public GameObject blockManager;
-
+	public GameObject rediChargeParticleObject;
+	ParticleSystem rediChargeParticles;
 
 	// Use this for initialization
 	void Start () {
@@ -34,6 +35,8 @@ public class blockScript : MonoBehaviour {
 		blockParticles.startSize = 0.0f;
 		OriginalParticleScale = blockParticles.transform.localScale;
 		redirectObj = GameObject.Find("redirectParticles");
+		rediChargeParticleObject = GameObject.FindGameObjectWithTag ("rediChargeParticles");
+		rediChargeParticles = rediChargeParticleObject.GetComponent<ParticleSystem> ();
 	}
 	
 	// Update is called once per frame
@@ -78,6 +81,7 @@ public class blockScript : MonoBehaviour {
 			durColorVal = (float)durability/maxDurability;
 			renderer.material.color = new Color(durColorVal,durColorVal,durColorVal);
 			blockParticles.startColor = new Color(durColorVal,durColorVal,durColorVal);
+			rediChargeParticles.Play ();
 
 		}
 		if (c.gameObject.name == "blockBox") {

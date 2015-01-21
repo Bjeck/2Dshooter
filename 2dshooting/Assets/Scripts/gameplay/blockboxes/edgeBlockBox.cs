@@ -20,23 +20,23 @@ public class edgeBlockBox : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider col){
 		if (col.gameObject.tag == "blockUnplaced") {
-			Debug.Log("ENTERING TRIGGER");
+//			Debug.Log("ENTERING TRIGGER");
 		}
 
 		//Debug.Log ("TRIGGER"+col.name);
 		if (col.gameObject == blboxman.CurrentBlockofEvaluation){
-			Debug.Log("OUT OF BOUNDS");
+	//		Debug.Log("OUT OF BOUNDS");
 			blboxman.SetOutOfBounds(true);
 		}
 	}
 	
 	void OnTriggerExit(Collider col){
 		if (col.gameObject.tag == "blockUnplaced") {
-			Debug.Log("EXITING TRIGGER");
+	//		Debug.Log("EXITING TRIGGER");
 		}
 
 		if (col.gameObject == blboxman.CurrentBlockofEvaluation){
-			Debug.Log("IN BOUNDS");
+		//	Debug.Log("IN BOUNDS");
 			blboxman.SetOutOfBounds(false);
 		}
 	}

@@ -36,6 +36,7 @@ public class giantParticle : MonoBehaviour {
 
 	public ParticleSystem globalBackgroundParticles;
 	Color particleColor;
+	bool pauseParticles = false;
 
 	// Use this for initialization
 	void Start () {
@@ -46,6 +47,23 @@ public class giantParticle : MonoBehaviour {
 	void Update () {
 	//	
 	//	Debug.Log (globalBackgroundParticles.emissionRate);
+
+		if(pauseParticles){
+			int rand = Random.Range(0,3);
+			if(rand == 0){
+				globalBackgroundParticles.startColor = new Color(Color.red.r, Color.red.g, Color.red.b, 0.05f);
+			}
+			else if(rand == 1){
+				globalBackgroundParticles.startColor = new Color(Color.yellow.r, Color.yellow.g, Color.yellow.b, 0.05f);
+			}
+			else if(rand == 2){
+				globalBackgroundParticles.startColor = new Color(Color.cyan.r, Color.cyan.g, Color.cyan.b, 0.05f);
+			}
+			else if(rand == 3){
+				globalBackgroundParticles.startColor =  new Color(Color.magenta.r, Color.magenta.g, Color.magenta.b, 0.05f);
+			}
+
+		}
 	}
 
 
@@ -59,9 +77,8 @@ public class giantParticle : MonoBehaviour {
 		}
 	}
 
-
-	
 	IEnumerator WaitASecondBeforeResettingColor(){
+
 		float t = 0;
 		while (t<0.5) {
 			t += Time.deltaTime;
@@ -71,6 +88,7 @@ public class giantParticle : MonoBehaviour {
 		//renderer.material.color = particleColor;
 		globalBackgroundParticles.startColor = particleColor;
 		yield return 0;
+
 	}
 
 
@@ -84,5 +102,22 @@ public class giantParticle : MonoBehaviour {
 	}
 
 
+
+	public void SetPauseParticles(bool b){
+		pauseParticles = b;
+
+		if (b == false) {
+			globalBackgroundParticles.startColor = new Color(Color.cyan.r, Color.cyan.g, Color.cyan.b, 0.05f);
+			StartCoroutine (WaitASecondBeforeResettingColor ());
+			globalBackgroundParticles.startLifetime = 1;
+			globalBackgroundParticles.startSize = 2.86f;
+		}
+		else{
+			pauseParticles = true;
+			globalBackgroundParticles.startLifetime = 2;
+			globalBackgroundParticles.startSize = 1;
+
+		}
+	}
 
 }
