@@ -108,16 +108,32 @@ public class giantParticle : MonoBehaviour {
 
 		if (b == false) {
 			globalBackgroundParticles.startColor = new Color(Color.cyan.r, Color.cyan.g, Color.cyan.b, 0.05f);
-			StartCoroutine (WaitASecondBeforeResettingColor ());
 			globalBackgroundParticles.startLifetime = 1;
 			globalBackgroundParticles.startSize = 2.86f;
+			globalBackgroundParticles.startSpeed = 0.5f;
+			StartCoroutine (ResumeAfterPause ());
 		}
 		else{
 			pauseParticles = true;
 			globalBackgroundParticles.startLifetime = 2;
 			globalBackgroundParticles.startSize = 1;
+			globalBackgroundParticles.startSpeed = 0.3f;
 
 		}
+	}
+
+	IEnumerator ResumeAfterPause(){
+		
+		float t = 0;
+		while (t<0.3) {
+			t += Time.deltaTime;
+			yield return 0;
+		}
+		//Debug.Log ("CHANGE BACK");
+		//renderer.material.color = particleColor;
+		globalBackgroundParticles.startColor = particleColor;
+		yield return 0;
+		
 	}
 
 }

@@ -23,12 +23,28 @@ public class camera : MonoBehaviour {
 	playerMovement playerScript;
 
 	Vector2 centerCoords = new Vector2(0,0);
-	public float moveSpeed = 0.5f;
+	float moveSpeed;
+	public float moveSpeedModifier = 80;
+	public float shakeAmount = 0.1f;
+	Vector3 shakeOrigin;
+	public float shakeTime = 0.2f;
+	bool shouldShake = false;
+	public float shakeSmooth = 1;
+	public float shakeStrength = 1;
 
 	float intensityLerpGoal = 0f;
 	float intensityAdder;
 	float intensitySubtracter;
 	bool changeIntensity = false;
+
+
+
+	public float duration = 0.5f;
+	public float speed = 1.0f;
+	public float magnitude = 0.1f;
+	
+	public bool test = false;
+
 
 
 	// Use this for initialization
@@ -62,11 +78,15 @@ public class camera : MonoBehaviour {
 			centerCoords.y = Mathf.Clamp(centerCoords.y,0,1.5f);
 			centerCoords.x = Mathf.Clamp(centerCoords.x,-2,2);
 			
-			moveSpeed =  ((float)playerScript.bulletList.Count)/80;
+			moveSpeed =  ((float)playerScript.bulletList.Count)/moveSpeedModifier;
 			
 			transform.position = new Vector3 (Mathf.Lerp(transform.position.x,centerCoords.x,moveSpeed*Time.fixedDeltaTime), 
 			                                  Mathf.Lerp(transform.position.y,centerCoords.y,moveSpeed*Time.fixedDeltaTime), 
 			                                  transform.position.z);
+		}
+
+		if (Input.GetKeyDown (KeyCode.T)) {
+			PlayShake();
 		}
 
 /*
@@ -175,6 +195,54 @@ public class camera : MonoBehaviour {
 		centerCoords.y = sum.y/ playerScript.bulletList.Count;
 
 	}
+
+
+
+	public void PlayShake() {
+		
+		StopAllCoroutines();
+		StartCoroutine("pShake");
+	}
+
+
+	IEnumerator pShake() {
+		
+		float elapsed = 0.0f;
+		
+		Vector3 originalCamPos = Camera.main.transform.position;
+		float randomStart = Random.Range(-10.0f, 10.0f);
+		
+		while (elapsed < duration) {
+			
+			elapsed += Time.deltaTime;			
+			
+			float percentComplete = elapsed / duration;			
+			
+			// We want to reduce the shake from full power to 0 starting half way through
+			float damper = 1.0f - Mathf.Clamp(2.0f * percentComplete - 1.0f, 0.0f, 1.0f);
+			
+			// Calculate the noise parameter starting randomly and going as fast as speed allows
+			float alpha = randomStart + speed * percentComplete;
+			
+			// map noise to [-1, 1]
+			float x = Util.Noise.GetNoise(alpha, 0.0f, 0.0f) * 2.0f - 1.0f;
+			float y = Util.Noise.GetNoise(0.0f, alpha, 0.0f) * 2.0f - 1.0f;
+			
+			x *= magnitude * damper;
+			y *= magnitude * damper;
+
+			y+= originalCamPos.y;
+			x+= originalCamPos.x;
+			
+			Camera.main.transform.position = new Vector3(x, y, originalCamPos.z);
+			
+			yield return null;
+		}
+		
+		Camera.main.transform.position = originalCamPos;
+	}
+
+
 
 
 	/*

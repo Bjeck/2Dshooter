@@ -19,6 +19,9 @@ public class Ending : MonoBehaviour {
 	GameObject Player;
 	GameObject globalTimer; 
 
+	public AudioSource pauseSound;
+	public AudioSource unPauseSound;
+
 
 
 
@@ -116,6 +119,7 @@ public class Ending : MonoBehaviour {
 		giantParticle.instance.SetPauseParticles (true);
 		pauseText.gameObject.SetActive(true);
 		dirLight.gameObject.SetActive (false);
+		pauseSound.Play ();
 	}
 	
 	public void UnPauseGame(){
@@ -123,8 +127,8 @@ public class Ending : MonoBehaviour {
 		giantParticle.instance.SetPauseParticles (false);
 		pauseText.gameObject.SetActive(false);
 		dirLight.gameObject.SetActive (true);
+		unPauseSound.Play ();
 	}
-
 
 
 

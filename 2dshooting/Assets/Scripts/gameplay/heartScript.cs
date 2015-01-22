@@ -15,6 +15,7 @@ public class heartScript : MonoBehaviour {
 	Ending ending;
 
 	public ParticleSystem heartSystem;
+	public GameObject cam;
 
 	public GameObject particleSystemHolder;
 	List<ParticleSystem> lifeParticles = new List<ParticleSystem>();
@@ -58,6 +59,8 @@ public class heartScript : MonoBehaviour {
 			lifeParticles[currentlyUnlitParticles].startColor = Color.black;
 			currentlyUnlitParticles++;
 
+			//cam.GetComponent<camera>().StartCameraShake(1);
+			cam.GetComponent<camera>().PlayShake();
 
 			if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
 				endingObject.GetComponent<Ending>().EndGame();
