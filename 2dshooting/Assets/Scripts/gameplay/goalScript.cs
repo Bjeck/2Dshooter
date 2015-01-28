@@ -42,9 +42,12 @@ public class goalScript : MonoBehaviour {
 		pitch = ScoreSound.pitch;
 
 	//	Debug.Log ("From goal: " + singleton.activeSelf + " " + singleton.activeInHierarchy + " " + this.gameObject);
-		//if(!sS.inMenu && this.gameObject != null){
-		//	scoreText.text = "" + score;
-		//}
+
+
+	//SHOW TEXT
+		if(!sS.inMenu && this.gameObject != null){
+			scoreText.text = "" + score;
+		}
 
 	//	goalSystem.maxParticles = score*4+100;
 		//giantParticle.maxParticles = score;

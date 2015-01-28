@@ -17,11 +17,11 @@ public class lightscript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		/*
 		rot = new Vector3(speed*Time.fixedDeltaTime,-speed*Time.fixedDeltaTime,0);
 
 		transform.Rotate (rot);
-
+*/
 		inten = transform.rotation.eulerAngles.z;
 		inten /= 180;
 		inten *= 0.5f;

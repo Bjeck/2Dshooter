@@ -9,6 +9,7 @@ public class timerScript : MonoBehaviour {
 	public ParticleSystem warningSystem;
 	public GameObject player;
 	public GameObject heart;
+	heartScript heartScr;
 	playerMovement playerS;
 	float parSize;
 	float parSpeed;
@@ -28,6 +29,9 @@ public class timerScript : MonoBehaviour {
 	public GameObject timeBar;
 	public GameObject timeBar2;
 	Vector3 barScale;
+	bool hasColouredParticles = false;
+	AudioSource timerZeroSound;
+	public Color textColor;
 
 
 	// Use this for initialization
@@ -35,6 +39,8 @@ public class timerScript : MonoBehaviour {
 		bulletTimerText = GetComponent<TextMesh> ();
 		//warningSystem = GetComponentInChildren<ParticleSystem> ();
 		playerS = player.GetComponent<playerMovement> ();
+		heartScr = heart.GetComponent<heartScript> ();
+		timerZeroSound = GetComponent<AudioSource> ();
 		scaleInitialSize = scaleObject.transform.localScale;
 		scaleInitialSize2 = scaleObject2.transform.localScale;
 		barScale = new Vector3(0f,0.4775151f,1);
@@ -59,11 +65,14 @@ public class timerScript : MonoBehaviour {
 
 		}
 
-		if (bulletCountdown <= 0) { //if time over: LOSE
+		if (bulletCountdown <= 0) { //if time over: LOSE 4 LIVES
 
-			//bulletTimerText.text = "YOU LOSE!";
-			lost = true;
-			endingObject.GetComponent<Ending>().EndGame();
+			heartScr.LoseLife(4); // Lose this many lives.
+			bulletCountdown = 20;
+
+			timerZeroSound.Play();
+
+			//endingObject.GetComponent<Ending>().EndGame();
 			//bulletCountdown = 10;
 		}
 
@@ -100,16 +109,22 @@ public class timerScript : MonoBehaviour {
 				scaleObject2.renderer.material.color = new Color(scaleObject2.renderer.material.color.r,scaleObject2.renderer.material.color.g,scaleObject2.renderer.material.color.b,(6-bulletCountdown)/6);
 
 
+
+
+
 		}
 		else if(bulletCountdown > 6f){ //&& warningSystem.isPlaying){
 			//warningSystem.Stop ();
 			//giantParticle.instance.globalBackgroundParticles.gravityModifier = 0f;
+
 
 			scaleObject.transform.localScale = scaleInitialSize;
 			scaleObject2.transform.localScale = scaleInitialSize2;
 
 		}
 
+
+	//NOT USED ATM
 		if (warningSystem.isPlaying) {
 			parSize = bulletCountdown;
 			parSize /= 6;
@@ -119,7 +134,7 @@ public class timerScript : MonoBehaviour {
 			//Debug.Log(parSize);
 			warningSystem.startSize = parSize;
 
-			//NOT USED ATM
+			//NOT USED ATM!!
 			int rand = Random.Range(0,3);
 			if(rand == 0){
 				warningSystem.startColor = Color.red;
@@ -145,6 +160,11 @@ public class timerScript : MonoBehaviour {
 		}
 
 		if(bulletCountdown < 4f){
+			if(!hasColouredParticles){
+				heartScr.ColorParticlesForWarning(4);
+				hasColouredParticles = true;
+			}
+
 			if(flashTimer <= 0){
 				if(isTextYellow){
 					bulletTimerText.color = Color.red;
@@ -162,7 +182,13 @@ public class timerScript : MonoBehaviour {
 
 		}
 		else{
-			bulletTimerText.color = Color.white;
+			if(hasColouredParticles){
+				Debug.Log("SHOULD RECOLOR");
+				hasColouredParticles = false;
+				heartScr.ResetParticleColor(4);
+			}
+
+			bulletTimerText.color = textColor;
 		}
 	}
 }

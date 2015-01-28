@@ -86,7 +86,7 @@ public class camera : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.T)) {
-			PlayShake();
+			PlayShake(magnitude);
 		}
 
 /*
@@ -198,14 +198,14 @@ public class camera : MonoBehaviour {
 
 
 
-	public void PlayShake() {
+	public void PlayShake(float m) {
 		
 		StopAllCoroutines();
-		StartCoroutine("pShake");
+		StartCoroutine(pShake(m));
 	}
 
 
-	IEnumerator pShake() {
+	IEnumerator pShake(float m) {
 		
 		float elapsed = 0.0f;
 		
@@ -228,8 +228,8 @@ public class camera : MonoBehaviour {
 			float x = Util.Noise.GetNoise(alpha, 0.0f, 0.0f) * 2.0f - 1.0f;
 			float y = Util.Noise.GetNoise(0.0f, alpha, 0.0f) * 2.0f - 1.0f;
 			
-			x *= magnitude * damper;
-			y *= magnitude * damper;
+			x *= m * damper;
+			y *= m * damper;
 
 			y+= originalCamPos.y;
 			x+= originalCamPos.x;
@@ -238,7 +238,7 @@ public class camera : MonoBehaviour {
 			
 			yield return null;
 		}
-		
+
 		Camera.main.transform.position = originalCamPos;
 	}
 

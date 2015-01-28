@@ -20,6 +20,8 @@ public class heartScript : MonoBehaviour {
 	public GameObject particleSystemHolder;
 	List<ParticleSystem> lifeParticles = new List<ParticleSystem>();
 	int currentlyUnlitParticles = 0;
+
+	Color initLightColor;
 	
 	// Use this for initialization
 	void Start () {
@@ -27,12 +29,14 @@ public class heartScript : MonoBehaviour {
 		sS = singleton.GetComponent<GlobalSingleton> ();
 
 		lifeText = lifeTextObject.GetComponent<TextMesh> ();
-
+	
 		Reset ();
 
 		foreach(ParticleSystem p in lifeParticles){
 			p.gameObject.SetActive(true);
 		}
+		initLightColor = lifeParticles [0].startColor;
+
 
 		if(!sS.inMenu){
 			lifeText.text = "";
@@ -43,11 +47,7 @@ public class heartScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
-
 		heartSystem.startSize = (life/16f)*0.2f;
-
-
 	}
 	
 	
@@ -60,13 +60,56 @@ public class heartScript : MonoBehaviour {
 			currentlyUnlitParticles++;
 
 			//cam.GetComponent<camera>().StartCameraShake(1);
-			cam.GetComponent<camera>().PlayShake();
+			cam.GetComponent<camera>().PlayShake(cam.GetComponent<camera>().magnitude);
 
 			if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
 				endingObject.GetComponent<Ending>().EndGame();
 			}
 		}
 	}
+
+
+	public void LoseLife(int amount){
+		life -= amount;	
+		if(life < 0)
+			life = 0;
+
+		for (int i = 0; i< amount; i++) {
+			if(currentlyUnlitParticles < lifeParticles.Count-1){
+				lifeParticles[currentlyUnlitParticles].startColor = Color.black;
+				currentlyUnlitParticles++;
+			}
+		}
+
+		if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
+			endingObject.GetComponent<Ending>().EndGame();
+		}
+		else{
+			cam.GetComponent<camera>().PlayShake(2f);
+		}
+
+
+	}
+
+
+	public void ColorParticlesForWarning(int amount){
+		for (int i = 0; i< amount; i++) {
+			if(currentlyUnlitParticles+i <= lifeParticles.Count-1){
+				lifeParticles[currentlyUnlitParticles+i].startColor = Color.white;
+			}
+		}
+	}
+
+	public void ResetParticleColor(int amount){
+		Debug.Log("RECOLOR CALL");
+		for (int i = amount-1; i>= 0; i--) {
+			Debug.Log("RECOLOR");
+			if(currentlyUnlitParticles+i <= lifeParticles.Count-1){
+				lifeParticles[currentlyUnlitParticles+i].startColor = initLightColor;
+			}
+		}
+	}
+
 
 	public void Reset(){
 		

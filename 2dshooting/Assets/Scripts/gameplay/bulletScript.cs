@@ -35,7 +35,7 @@ public class bulletScript : MonoBehaviour {
 		ownParticles.Play ();
 
 
-		player = GameObject.Find ("Player");
+		player = GameObject.FindGameObjectWithTag ("Player");
 		trail = GetComponent<TrailRenderer> ();
 		playerS = player.GetComponent<playerMovement> ();
 		if(!sS.inMenu){
