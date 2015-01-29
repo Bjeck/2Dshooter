@@ -71,6 +71,11 @@ public class Ending : MonoBehaviour {
 		if (startButtonDown && Input.GetAxis ("Start") <= 0) {
 			startButtonDown = false;		
 		}
+
+
+		if(Input.GetKey(KeyCode.Escape)){
+			Application.Quit();
+		}
 	
 	}
 

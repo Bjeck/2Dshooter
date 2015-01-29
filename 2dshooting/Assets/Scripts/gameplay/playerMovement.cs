@@ -166,7 +166,7 @@ public class playerMovement : MonoBehaviour {
 		//bulletCounter += Time.deltaTime*0.3f;
 		bullets = bulletList.Count;
 		if(sS.inMenu){
-			balltext.text = "RT Bullets: "+bullets;
+			balltext.text = "RT: Particles";
 		}
 		else{
 			balltext.text = " ";
@@ -299,7 +299,7 @@ public class playerMovement : MonoBehaviour {
 			blocktext.text = "";
 		}
 		else{
-			blocktext.text = "LT Blocks: " + blockMan.GetAmountOfBlocksInMiddle();
+			blocktext.text = "Blocks: LT";
 		}
 
 		//BLOCK GRABBING
@@ -428,7 +428,7 @@ public class playerMovement : MonoBehaviour {
 			repellertext.text = " ";
 		}
 		else{
-			repellertext.text = "LB: Repeller";
+			repellertext.text = "Repeller: LB";
 		}
 
 
@@ -452,14 +452,14 @@ public class playerMovement : MonoBehaviour {
 
 		if(sS.inMenu){
 			if (rediScript.CanRedirect()) {
-			redirecttext.text = "RB! "+rediScript.RedirectCounter+ "/"+rediScript.redirectCoolCurrentGoal;
-			redirectpcttext.text = ""+rediScript.Redpct+"%";
+			redirecttext.text = "RB! Redirect";
+				redirectpcttext.text = ""+rediScript.Redpct+"%";
 				redirecttext.color = rediColor;
 				redirectpcttext.color = rediColor;
 			}
 			else{
-			redirecttext.text = "    "+rediScript.RedirectCounter+ "/"+rediScript.redirectCoolCurrentGoal;
-			redirectpcttext.text = ""+rediScript.Redpct+"%";
+				redirecttext.text = "RB: Redirect";
+				redirectpcttext.text = ""+rediScript.Redpct+"%";
 				redirecttext.color = Color.red;
 				redirectpcttext.color = Color.red;
 			}

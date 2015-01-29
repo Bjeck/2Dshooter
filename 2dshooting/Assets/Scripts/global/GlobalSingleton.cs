@@ -38,5 +38,6 @@ public class GlobalSingleton : MonoBehaviour {
 
 
 	void Start(){
+		Application.targetFrameRate = 60;
 	}
 }
