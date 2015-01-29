@@ -25,7 +25,6 @@ public class blockManager : MonoBehaviour {
 
 	ParticleSystem blockMoveEffect;
 
-
 	// Use this for initialization
 	void Start () {
 		pls = player.GetComponent<playerMovement> ();
@@ -44,8 +43,8 @@ public class blockManager : MonoBehaviour {
 			for(int j = 0;j<blocksAvailable;j++){
 				blocksInMiddle.Add((GameObject)Instantiate(Resources.Load("block",typeof(GameObject))));
 			}
-
 			PlaceAllBlocks();
+
 			hasdoneitonce = false;
 		}
 	
@@ -117,6 +116,21 @@ public class blockManager : MonoBehaviour {
 	public float GetAmountOfBlocksInMiddle(){
 		return blocksInMiddle.Count;
 	}
+
+	public void RedirectErrorEffect(){
+		if (blocksInMiddle.Count > 0) {
+			blockMoveEffect.transform.position = blocksInMiddle[currentBlockToTake-1].transform.position;		
+			blockMoveEffect.transform.eulerAngles = new Vector3(0,0,-45);
+			blockMoveEffect.startSpeed = -1f;
+			blockMoveEffect.Play ();
+			Invoke ("ResetMoveEffectSpeed", 0.1f);
+		}
+	}
+
+	void ResetMoveEffectSpeed(){
+		blockMoveEffect.startSpeed = -0.2f;
+	}
+
 
 
 }

@@ -183,7 +183,6 @@ public class timerScript : MonoBehaviour {
 		}
 		else{
 			if(hasColouredParticles){
-				Debug.Log("SHOULD RECOLOR");
 				hasColouredParticles = false;
 				heartScr.ResetParticleColor(4);
 			}

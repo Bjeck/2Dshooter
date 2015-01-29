@@ -468,16 +468,22 @@ public class playerMovement : MonoBehaviour {
 			//redirecttext.text = " ";
 
 		}
-		
-		if (Input.GetAxis ("Rbumper") > 0 && rediScript.CanRedirect() && !redButtonDown) {
-			//Debug.Log("redirect");
-			redButtonDown = true;
-			camScript.SubtractFromIntensity(1f);
-			StartCoroutine(Redirect(goal.transform.position));	
-		//	if(!sS.inMenu)
-		//	RedirectCounter = RedirectCounter - redirectCoolCurrentGoal;
-		//	redirect.instance.CanRedirectLess();
-			//canRedirect = false;
+
+		if (Input.GetAxis ("Rbumper") > 0){ 
+			if(rediScript.CanRedirect()){
+				if(!redButtonDown) {
+					redButtonDown = true;
+					camScript.SubtractFromIntensity(1f);
+					StartCoroutine(Redirect(goal.transform.position));	
+				}
+			}
+			else{
+				if(!redButtonDown){
+					blockErrorSound.Play();	
+					blockMan.RedirectErrorEffect();
+					redButtonDown = true;
+				}
+			}
 		}
 
 		if (redButtonDown && Input.GetAxis ("Rbumper") < 1) {

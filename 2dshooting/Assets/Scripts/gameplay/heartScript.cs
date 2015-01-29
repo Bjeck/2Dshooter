@@ -103,9 +103,7 @@ public class heartScript : MonoBehaviour {
 	}
 
 	public void ResetParticleColor(int amount){
-		Debug.Log("RECOLOR CALL");
 		for (int i = amount-1; i>= 0; i--) {
-			Debug.Log("RECOLOR");
 			if(currentlyUnlitParticles+i <= lifeParticles.Count-1){
 				lifeParticles[currentlyUnlitParticles+i].startColor = initLightColor;
 			}
