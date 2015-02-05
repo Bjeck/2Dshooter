@@ -32,6 +32,7 @@ public class timerScript : MonoBehaviour {
 	bool hasColouredParticles = false;
 	AudioSource timerZeroSound;
 	public Color textColor;
+	bool freezeTime = false;
 
 
 	// Use this for initialization
@@ -53,7 +54,7 @@ public class timerScript : MonoBehaviour {
 			return;		
 		}
 	
-		if(!lost){
+		if(!lost && !freezeTime){
 			bulletCountdown -= Time.fixedDeltaTime;
 			bulletCountdown = Mathf.Round (bulletCountdown * 100f) / 100f;
 
@@ -190,4 +191,15 @@ public class timerScript : MonoBehaviour {
 			bulletTimerText.color = textColor;
 		}
 	}
+
+
+	public void FreezeTime(){
+		freezeTime = true;
+	}
+
+	public void ResumeTime(){
+		freezeTime = false;
+	}
+
+
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GlobalSingleton : MonoBehaviour {
 
@@ -7,6 +8,13 @@ public class GlobalSingleton : MonoBehaviour {
 	public bool isPlayingForReal = true;
 	public bool duringStartUp = false;
 	public bool isPaused = false;
+	public bool isDoingTutorial;
+	public bool hasCompletedTutorialGeneral = false;
+	public bool hasCompletedTutorialNow = false;
+	public bool newSceneisLoaded = false;
+	public bool hasEnded = false;
+
+
 
 	private static GlobalSingleton _instance;
 
@@ -39,5 +47,27 @@ public class GlobalSingleton : MonoBehaviour {
 
 	void Start(){
 		Application.targetFrameRate = 60;
+		if (!isDoingTutorial) {
+			hasCompletedTutorialNow = true;
+			hasCompletedTutorialGeneral = true;
+		}
 	}
+
+	void Update(){
+
+		if (newSceneisLoaded) {
+			ResetReferences();
+			newSceneisLoaded = false;
+		}
+	}
+
+
+	public void ResetReferences(){
+
+	}
+
+	public void TutorialInit(){
+
+	}
+
 }

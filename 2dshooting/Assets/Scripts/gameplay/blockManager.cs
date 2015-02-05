@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public class blockManager : MonoBehaviour {
 
-	List<GameObject> blocksInMiddle = new List<GameObject>();
+	public List<GameObject> blocksInMiddle = new List<GameObject>();
 	List<float> TakenBlockPositions = new List<float>();
 	List<float> AvailableBlockPositions = new List<float>(){-0.5f,0.5f,-1.5f,1.5f,-2.5f,2.5f,-3.5f,3.5f,-4.5f,4.5f,-5.5f,5.5f};
 	int currentBlockToTake = 0;
@@ -39,15 +39,19 @@ public class blockManager : MonoBehaviour {
 
 		//Debug.Log (currentBlockToTake + "  " + blocksInMiddle.Count + " " + blocksAvailable);
 
-		if(hasdoneitonce){ //spawns the right amount of blocks in the beginning.
-			for(int j = 0;j<blocksAvailable;j++){
-				blocksInMiddle.Add((GameObject)Instantiate(Resources.Load("block",typeof(GameObject))));
-			}
-			PlaceAllBlocks();
+		if(hasdoneitonce && !GlobalSingleton.instance.isDoingTutorial){
+			if(!GlobalSingleton.instance.hasCompletedTutorialNow && GlobalSingleton.instance.hasCompletedTutorialGeneral){
 
-			hasdoneitonce = false;
+				//spawns the right amount of blocks in the beginning.
+				for(int j = 0;j<blocksAvailable;j++){
+					Debug.Log("PLACING BLOCKS IN THE BEGINNING");
+					blocksInMiddle.Add((GameObject)Instantiate(Resources.Load("block",typeof(GameObject))));
+				}
+				PlaceAllBlocks();
+				
+				hasdoneitonce = false;
+			}
 		}
-	
 	}
 
 
@@ -131,6 +135,15 @@ public class blockManager : MonoBehaviour {
 		blockMoveEffect.startSpeed = -0.2f;
 	}
 
+/*	public void ResetBlocksInMiddle(){
+		foreach (GameObject g in blocksInMiddle) {
+			Destroy(g);		
+		}
+		for(int i=0;i<2;i++){
+			UpdateAmountOfAvailableBlocks(1);
+		}
+	}
+*/
 
 
 }

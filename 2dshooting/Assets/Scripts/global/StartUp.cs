@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
+//Script that controls the startup, mainly the animation, and the delay on spawning elements in the level (player and corners)
+
 public class StartUp : MonoBehaviour {
 
 
@@ -57,9 +60,11 @@ public class StartUp : MonoBehaviour {
 			timer += Time.deltaTime;
 			yield return 0;
 		}
+
 		player.SetActive(true);
 		timers.SetActive(true);
-		managers.SetActive(true);
+		managers.SetActive(true);	
+
 		isStarting = false;
 		
 		yield return 0;

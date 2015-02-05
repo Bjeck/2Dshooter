@@ -56,16 +56,25 @@ public class heartScript : MonoBehaviour {
 		if (c.gameObject.tag == "ball" && GlobalSingleton.instance.isPlayingForReal) {
 			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.0f,0.18f,0.1f));
 
-			life--;		
+			if(GlobalSingleton.instance.isDoingTutorial){
+				// DO NOTHING OTHER THAN FEEDBACK
+			}
+			else{
+				life--;		
 
-			lifeParticles[currentlyUnlitParticles].startColor = Color.black;
-			currentlyUnlitParticles++;
-
+				lifeParticles[currentlyUnlitParticles].startColor = Color.black;
+				currentlyUnlitParticles++;
+			}
 			//cam.GetComponent<camera>().StartCameraShake(1);
 			cam.GetComponent<camera>().PlayShake(cam.GetComponent<camera>().magnitude);
 
 			if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
+
+
 				endingObject.GetComponent<Ending>().EndGame();
+
+
+
 			}
 		}
 	}

@@ -63,7 +63,7 @@ public class playerMovement : MonoBehaviour {
 
 	//Repeller
 	GameObject repeller;
-	bool repellerActive = false;
+	public bool repellerActive = false;
 	public AudioSource repellerSound;
 	public AudioClip repellerSoundClip;
 	public float repellerCoolDown = 12;
@@ -87,17 +87,7 @@ public class playerMovement : MonoBehaviour {
 	redirect rediScript;
 
 	//Texts:
-	GameObject blockTextObj;
-	public GameObject ballTextObj;
-	GameObject repellerTextObj;
-	GameObject redirectTextObj;
-	public GameObject redirectpcttextObj;
 
-	TextMesh blocktext;
-	TextMesh balltext;
-	TextMesh repellertext;
-	TextMesh redirecttext;
-	TextMesh redirectpcttext;
 	
 	// Use this for initialization
 	void Start () {
@@ -121,19 +111,10 @@ public class playerMovement : MonoBehaviour {
 		flashOffSound = targetLight.GetComponent<AudioSource> ();
 		trail = GetComponent<TrailRenderer>();
 
-		blockTextObj = GameObject.Find ("blockText");
-		ballTextObj = GameObject.Find ("ballText");
-		repellerTextObj = GameObject.Find ("repellerText");
-		redirectTextObj = GameObject.Find ("redirectText");
-
 		if(!sS.inMenu){
 			timerS = GameObject.Find ("bulletTimerText").GetComponent<timerScript> ();
 		}
-		blocktext = blockTextObj.GetComponent<TextMesh> ();
-		balltext = ballTextObj.GetComponent<TextMesh> ();
-		repellertext = repellerTextObj.GetComponent<TextMesh> ();
-		redirecttext = redirectTextObj.GetComponent<TextMesh> ();
-		redirectpcttext = redirectpcttextObj.GetComponent<TextMesh>();
+
 //		Debug.Log(redirectpcttext.gameObject);
 	//	repellertext.text = "LB: Repeller";
 
@@ -165,26 +146,10 @@ public class playerMovement : MonoBehaviour {
 
 		//bulletCounter += Time.deltaTime*0.3f;
 		bullets = bulletList.Count;
-		if(sS.inMenu){
-			balltext.text = "RT: Particles";
-		}
-		else{
-			balltext.text = " ";
-		}
 
 
 
-		if (bullets > 0) {
-			canShoot = true;		
-		}
-		else{
-			canShoot = false;
-		}
-
-		//if(canShoot)
-		//Debug.Log (targeter);
-
-		//SHOOT
+	//----------------------------------- SHOOT
 		if(Input.GetAxis("Trigger") > 0){
 			lockPosition = true;
 			//rigidbody.velocity = new Vector3(0,0,0);
@@ -295,12 +260,7 @@ public class playerMovement : MonoBehaviour {
 
 //		Debug.Log(Input.GetAxis("Rbumper"));
 
-		if(!sS.inMenu){
-			blocktext.text = "";
-		}
-		else{
-			blocktext.text = "Blocks: LT";
-		}
+
 
 		//BLOCK GRABBING
 		if (Input.GetAxis ("LTrigger") > 0 && !isBlockSpawning && blockMan.GetAmountOfBlocksInMiddle() > 0) {
@@ -424,12 +384,7 @@ public class playerMovement : MonoBehaviour {
 */
 	//	repellerCoolDown = Mathf.Round (repellerCoolDown * 100f) / 100f;
 		//Debug.Log (repellerCoolDown);
-		if(!sS.inMenu){
-			repellertext.text = " ";
-		}
-		else{
-			repellertext.text = "Repeller: LB";
-		}
+
 
 
 
@@ -450,24 +405,7 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 
-		if(sS.inMenu){
-			if (rediScript.CanRedirect()) {
-			redirecttext.text = "RB! Redirect";
-				redirectpcttext.text = ""+rediScript.Redpct+"%";
-				redirecttext.color = rediColor;
-				redirectpcttext.color = rediColor;
-			}
-			else{
-				redirecttext.text = "RB: Redirect";
-				redirectpcttext.text = ""+rediScript.Redpct+"%";
-				redirecttext.color = Color.red;
-				redirectpcttext.color = Color.red;
-			}
-		}
-		else{
-			//redirecttext.text = " ";
 
-		}
 
 		if (Input.GetAxis ("Rbumper") > 0){ 
 			if(rediScript.CanRedirect()){

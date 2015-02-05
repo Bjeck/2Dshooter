@@ -8,6 +8,7 @@ public class Ending : MonoBehaviour {
 	public bool hasEnded = false;
 	public bool SpaceEndedIt = false;
 	bool startButtonDown;
+	public GameObject UIObjects;
 
 
 	public GameObject redirectObj;
@@ -21,6 +22,7 @@ public class Ending : MonoBehaviour {
 
 	public AudioSource pauseSound;
 	public AudioSource unPauseSound;
+	public TextMesh menuInfoText;
 
 
 
@@ -30,6 +32,7 @@ public class Ending : MonoBehaviour {
 
 	//	endTexts.Add(GetComponent<TextMesh>());
 		endTexts.AddRange(GetComponentsInChildren<TextMesh>());
+		GlobalSingleton.instance.hasEnded = false;
 
 
 		if (!hasEnded) {
@@ -41,8 +44,30 @@ public class Ending : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+// ---------- IF HAS ENDED
 		if (hasEnded) {
+			menuInfoText.text = "Press A to go to Menu. Press B to Play Again";
+
 			if(Input.GetKey(KeyCode.Space)){ //
+				RestartGame();
+			}
+
+			if(Input.GetKey(KeyCode.Joystick1Button0) || Input.GetKey(KeyCode.Joystick1Button16)){ // GO TO MENU
+				RestartGame();
+				GlobalSingleton.instance.inMenu = true;
+				SpaceEndedIt = true;
+				if(GlobalSingleton.instance.isPaused){
+					UnPauseGame();
+				}
+				RestartGame();
+			}
+			else if(Input.GetKey(KeyCode.Joystick1Button1) || Input.GetKey(KeyCode.Joystick1Button17)){
+				GlobalSingleton.instance.inMenu = false;
+				SpaceEndedIt = true;
+				if(GlobalSingleton.instance.isPaused){
+					UnPauseGame();
+				}
 				RestartGame();
 			}
 		}
@@ -56,9 +81,20 @@ public class Ending : MonoBehaviour {
 			}
 		}
 
+
+
+
 		if (GlobalSingleton.instance.isPaused && !startButtonDown) {
+
+			if(!UIObjects.activeInHierarchy && GlobalSingleton.instance.isDoingTutorial){
+				UIObjects.SetActive(true);	
+			}
+				
 			if(Input.GetAxis("Start") > 0){
 				UnPauseGame();
+				if(GlobalSingleton.instance.isDoingTutorial){
+					UIObjects.SetActive(false);	
+				}
 				startButtonDown = true;
 			}
 		}
@@ -86,6 +122,8 @@ public class Ending : MonoBehaviour {
 				ShowScoreText();
 			}
 
+			GlobalSingleton.instance.hasEnded = true;
+
 			Time.timeScale = 0;
 			hasEnded = true;
 
@@ -112,7 +150,8 @@ public class Ending : MonoBehaviour {
 	}
 
 	public void RestartGame(){
-		redirectObj.GetComponent<redirect>().Reset();
+		//redirectObj.GetComponent<redirect>().Reset();
+		GlobalSingleton.instance.newSceneisLoaded = true;
 		Application.LoadLevel (Application.loadedLevel);
 		Time.timeScale = 1;
 	}
