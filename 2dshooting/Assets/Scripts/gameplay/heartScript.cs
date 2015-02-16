@@ -22,7 +22,7 @@ public class heartScript : MonoBehaviour {
 	int currentlyUnlitParticles = 0;
 
 	Color initLightColor;
-	
+
 	// Use this for initialization
 	void Start () {
 		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
@@ -49,32 +49,35 @@ public class heartScript : MonoBehaviour {
 
 		heartSystem.startSize = (life/16f)*0.2f;
 	}
+
+	void OnCollisionstay(Collision c){
+		if(c.gameObject.tag == "Player"){
+
+		}
+	}
 	
 	
 	void OnCollisionEnter(Collision c){
 
 		if (c.gameObject.tag == "ball" && GlobalSingleton.instance.isPlayingForReal) {
-			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.0f,0.18f,0.1f));
-
-			if(GlobalSingleton.instance.isDoingTutorial){
-				// DO NOTHING OTHER THAN FEEDBACK
-			}
-			else{
-				life--;		
-
-				lifeParticles[currentlyUnlitParticles].startColor = Color.black;
-				currentlyUnlitParticles++;
-			}
-			//cam.GetComponent<camera>().StartCameraShake(1);
-			cam.GetComponent<camera>().PlayShake(cam.GetComponent<camera>().magnitude);
-
-			if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
-
-
-				endingObject.GetComponent<Ending>().EndGame();
-
-
-
+			if(c.gameObject.GetComponent<bulletScript>().canHitHeart){
+				giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.0f,0.18f,0.1f));
+				
+				if(GlobalSingleton.instance.isDoingTutorial){
+					// DO NOTHING OTHER THAN FEEDBACK
+				}
+				else{
+					life--;		
+					
+					lifeParticles[currentlyUnlitParticles].startColor = Color.black;
+					currentlyUnlitParticles++;
+				}
+				//cam.GetComponent<camera>().StartCameraShake(1);
+				cam.GetComponent<camera>().PlayShake(cam.GetComponent<camera>().magnitude);
+				
+				if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
+					endingObject.GetComponent<Ending>().EndGame();
+				}
 			}
 		}
 	}

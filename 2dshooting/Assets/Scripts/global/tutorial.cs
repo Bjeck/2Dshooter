@@ -63,12 +63,12 @@ public class tutorial : MonoBehaviour {
 			switch (tutorialEnumerator)
 			{
 			case 0:
-				textPos = new Vector3(-10f,0f,-6f);
+				textPos = new Vector3(-9f,0f,-6f);
 				FadeText("Left Stick Moves",textPos);
 				tutorialEnumerator++;
 				break;
 			case 1:
-				textPos = new Vector3(10f,0f,-6f);
+				textPos = new Vector3(9f,0f,-6f);
 				FadeText("Right Stick Aims",textPos);
 				tutorialEnumerator++;
 				break;
@@ -84,12 +84,12 @@ public class tutorial : MonoBehaviour {
 				tutorialEnumerator++;
 				break;
 			case 4:
-				textPos = new Vector3(-10f,3f,-6f);
+				textPos = new Vector3(-9f,3f,-6f);
 				FadeText("LB\nto Repel Particles",textPos);
 				tutorialEnumerator++;
 				break;
 			case 5:
-				textPos = new Vector3(-10f,-3f,-6f);
+				textPos = new Vector3(-9f,-3.2f,-6f);
 				FadeText("Protect the\nRed Corner",textPos);
 				Heart.SetActive(true);
 				LifeParticles.SetActive(true);
@@ -97,7 +97,7 @@ public class tutorial : MonoBehaviour {
 				tutorialEnumerator++;
 				break;
 			case 6:
-				textPos = new Vector3(-10.5f,-2f,-6f);
+				textPos = new Vector3(-9.5f,-2f,-6f);
 				FadeText("Hold LT to\ngrab a Block\nfrom the Middle",textPos);
 				blockManager.SetActive(true);
 				for(int i=0;i<2;i++){
@@ -114,18 +114,18 @@ public class tutorial : MonoBehaviour {
 				tutorialEnumerator++;
 				break;
 			case 8:
-				textPos = new Vector3(-10.5f,-2f,-6f);
+				textPos = new Vector3(-9.5f,-2f,-6f);
 				FadeText("Release LT to\nPlace Block\nwhile Aiming",textPos);
 				tutorialEnumerator++;
 				break;
 			case 9:
-				textPos = new Vector3(10f,4f,-6f);
+				textPos = new Vector3(9.3f,4f,-6f);
 				rediScr = Redirects.GetComponentInChildren<redirect>();
 				FadeText("Particles hit blocks.\nThis Charges Redirect",textPos);
 				tutorialEnumerator++;
 				break;
 			case 10:
-				textPos = new Vector3(10.5f,5f,-6f);
+				textPos = new Vector3(9.5f,4f,-6f);
 				FadeText("These orbs show\nhow many Redirects\nare available",textPos);
 				tutorialEnumerator++;
 				break;
@@ -134,7 +134,7 @@ public class tutorial : MonoBehaviour {
 				tutorialEnumerator++;
 				break;
 			case 12:
-				textPos = new Vector3(-9f,7f,-6f);
+				textPos = new Vector3(-7f,7f,-6f);
 				FadeText("The timer will\nstart once the tutorial\nis over",textPos);
 				UIObjects.SetActive(true);
 				timerScr.bulletCountdown = 20;
@@ -421,7 +421,7 @@ public class tutorial : MonoBehaviour {
 						if(timer > timeToDelayAction)
 						{
 							if(!localBool){
-								textPos = new Vector3(10f,5f,-6f);
+								textPos = new Vector3(9.3f,5f,-6f);
 								FadeText("Blocks need to be\nplaced in the top right",textPos);
 								timer = 0;
 								localBool = true;

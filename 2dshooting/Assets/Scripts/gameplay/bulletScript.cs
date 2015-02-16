@@ -24,6 +24,8 @@ public class bulletScript : MonoBehaviour {
 	bool isPaused = false;
 
 	bool starting = true;
+	public bool canHitHeart = false;
+	float hitHeartTimer = 0.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -65,6 +67,13 @@ public class bulletScript : MonoBehaviour {
 
 		rigidbody.velocity = constantSpeed * (rigidbody.velocity.normalized);
 
+
+		if(!canHitHeart){
+			hitHeartTimer += Time.deltaTime;
+			if(hitHeartTimer > 0.1f){
+				canHitHeart = true;
+			}
+		}
 
 		/*if (starting) {
 			ownParticles.gameObject.transform.localScale = new Vector3(1,1,1);
