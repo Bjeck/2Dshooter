@@ -16,7 +16,7 @@ public class bulletScript : MonoBehaviour {
 	public Vector3 dir;
 	GameObject player;
 	playerMovement playerS;
-	float timer;
+	public float timer;
 	private float timerStart = 5f;
 	TrailRenderer trail;
 	GameObject bulletManager;
@@ -104,7 +104,7 @@ public class bulletScript : MonoBehaviour {
 
 		if(!sS.inMenu){
 			if(timer>0){
-				timer -= Time.fixedDeltaTime;
+			//	timer -= Time.fixedDeltaTime;
 			}
 			else if(timer <= 0){
 				playerS.RemoveBullet(this.gameObject);
@@ -126,6 +126,7 @@ public class bulletScript : MonoBehaviour {
 
 
 	void OnCollisionEnter(Collision col){
+		timer--;
 	//	renderer.material.color = Color.black;
 		if(ownParticles != null){
 
