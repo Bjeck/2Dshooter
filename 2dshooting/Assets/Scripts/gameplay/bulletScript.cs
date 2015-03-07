@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class bulletScript : MonoBehaviour {
@@ -6,7 +6,7 @@ public class bulletScript : MonoBehaviour {
 	public GameObject singleton;
 	GlobalSingleton sS;
 
-	public float constantSpeed = 5;
+	public float constantSpeed = 4;
 
 
 	ParticleSystem ownParticles;
@@ -24,6 +24,8 @@ public class bulletScript : MonoBehaviour {
 	bool isPaused = false;
 
 	bool starting = true;
+	public bool canHitHeart = false;
+	float hitHeartTimer = 0.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -48,6 +50,7 @@ public class bulletScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+
 		if (GlobalSingleton.instance.isPaused) {
 			if(!isPaused){
 				Storeddirection = GetComponent<Rigidbody>().velocity;
@@ -63,8 +66,17 @@ public class bulletScript : MonoBehaviour {
 			isPaused = false;
 		}
 
+
 		GetComponent<Rigidbody>().velocity = constantSpeed * (GetComponent<Rigidbody>().velocity.normalized);
 
+
+
+		if(!canHitHeart){
+			hitHeartTimer += Time.deltaTime;
+			if(hitHeartTimer > 0.1f){
+				canHitHeart = true;
+			}
+		}
 
 		/*if (starting) {
 			ownParticles.gameObject.transform.localScale = new Vector3(1,1,1);
@@ -116,6 +128,7 @@ public class bulletScript : MonoBehaviour {
 	void OnCollisionEnter(Collision col){
 	//	renderer.material.color = Color.black;
 		if(ownParticles != null){
+
 			ownParticles.startColor = Color.black;
 			StartCoroutine (WaitForStart ());
 			GameObject cPart = (GameObject)Instantiate(Resources.Load("collisionParticles",typeof(GameObject)));
