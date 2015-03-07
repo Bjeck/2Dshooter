@@ -50,8 +50,8 @@ public class bulletScript : MonoBehaviour {
 	void FixedUpdate () {
 		if (GlobalSingleton.instance.isPaused) {
 			if(!isPaused){
-				Storeddirection = rigidbody.velocity;
-				rigidbody.velocity = new Vector3(0,0,0);
+				Storeddirection = GetComponent<Rigidbody>().velocity;
+				GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
 				trail.time = Mathf.Infinity;
 			}
 			isPaused = true;
@@ -59,11 +59,11 @@ public class bulletScript : MonoBehaviour {
 		}
 
 		if (isPaused) {
-			rigidbody.velocity = Storeddirection;	
+			GetComponent<Rigidbody>().velocity = Storeddirection;	
 			isPaused = false;
 		}
 
-		rigidbody.velocity = constantSpeed * (rigidbody.velocity.normalized);
+		GetComponent<Rigidbody>().velocity = constantSpeed * (GetComponent<Rigidbody>().velocity.normalized);
 
 
 		/*if (starting) {
@@ -101,7 +101,7 @@ public class bulletScript : MonoBehaviour {
 			trail.time = timer / timerStart;
 
 			if(timer <= 1){
-				gameObject.collider.enabled = false;
+				gameObject.GetComponent<Collider>().enabled = false;
 				transform.localScale *= timer;
 			}
 		}

@@ -79,7 +79,7 @@ public class blockScript : MonoBehaviour {
 
 			durability--;
 			durColorVal = (float)durability/maxDurability;
-			renderer.material.color = new Color(durColorVal,durColorVal,durColorVal);
+			GetComponent<Renderer>().material.color = new Color(durColorVal,durColorVal,durColorVal);
 			blockParticles.startColor = new Color(durColorVal,durColorVal,durColorVal);
 			rediChargeParticles.Play ();
 

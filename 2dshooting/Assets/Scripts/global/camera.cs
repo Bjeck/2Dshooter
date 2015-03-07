@@ -55,7 +55,7 @@ public class camera : MonoBehaviour {
 		sS = singleton.GetComponent<GlobalSingleton> ();
 		playerScript = player.GetComponent<playerMovement> ();
 
-		cam = this.gameObject.camera;
+		cam = this.gameObject.GetComponent<Camera>();
 		originalLerpSpeed = lerpingSpeed;
 
 		if (sS.inMenu) {

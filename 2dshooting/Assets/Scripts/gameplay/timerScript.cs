@@ -98,16 +98,16 @@ public class timerScript : MonoBehaviour {
 			scaleSize.y = 40f;
 			scaleObject.transform.localScale = scaleSize;
 
-			if(scaleObject.renderer.material.color.a < 0.7f)
-				scaleObject.renderer.material.color = new Color(scaleObject.renderer.material.color.r,scaleObject.renderer.material.color.g,scaleObject.renderer.material.color.b,(6-bulletCountdown)/6);
+			if(scaleObject.GetComponent<Renderer>().material.color.a < 0.7f)
+				scaleObject.GetComponent<Renderer>().material.color = new Color(scaleObject.GetComponent<Renderer>().material.color.r,scaleObject.GetComponent<Renderer>().material.color.g,scaleObject.GetComponent<Renderer>().material.color.b,(6-bulletCountdown)/6);
 
 			scaleSize2 = scaleObject2.transform.localScale;
 			scaleSize2.x = 3.1f*(6-bulletCountdown);
 			scaleSize2.y = 40f;
 			scaleObject2.transform.localScale = scaleSize;
 
-			if(scaleObject2.renderer.material.color.a < 0.7f)
-				scaleObject2.renderer.material.color = new Color(scaleObject2.renderer.material.color.r,scaleObject2.renderer.material.color.g,scaleObject2.renderer.material.color.b,(6-bulletCountdown)/6);
+			if(scaleObject2.GetComponent<Renderer>().material.color.a < 0.7f)
+				scaleObject2.GetComponent<Renderer>().material.color = new Color(scaleObject2.GetComponent<Renderer>().material.color.r,scaleObject2.GetComponent<Renderer>().material.color.g,scaleObject2.GetComponent<Renderer>().material.color.b,(6-bulletCountdown)/6);
 
 
 

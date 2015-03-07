@@ -139,7 +139,7 @@ public class playerMovement : MonoBehaviour {
 
 		if (GlobalSingleton.instance.isPaused) {
 			transform.position = transform.position;
-			transform.rigidbody.velocity = new Vector3(0,0,0);
+			transform.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
 			return;		
 		}
 
@@ -166,10 +166,10 @@ public class playerMovement : MonoBehaviour {
 // ------------------------------------------------------------------------------------------------------------------------------------- MOVEMENT
 
 		if(!lockPosition){
-			rigidbody.drag = 0;
+			GetComponent<Rigidbody>().drag = 0;
 		//	targetLight.transform.rotation = Quaternion.LookRotation( new Vector3(0,0,0));
 
-			mover = transform.rigidbody.velocity;
+			mover = transform.GetComponent<Rigidbody>().velocity;
 			mover.x = Input.GetAxis ("Horizontal");
 			mover.y = Input.GetAxis ("Vertical");
 
@@ -187,7 +187,7 @@ public class playerMovement : MonoBehaviour {
 			if(transform.position.y < -6 && temp.y < 0)
 				temp.y = 0;
 
-			transform.rigidbody.velocity = temp;
+			transform.GetComponent<Rigidbody>().velocity = temp;
 
 		//	Debug.Log (Input.GetAxis ("Horizontal"));
 
@@ -195,7 +195,7 @@ public class playerMovement : MonoBehaviour {
 		else{
 			//Debug.Log("SHOULD STOP MOVING");
 			transform.position = transform.position;
-			rigidbody.drag = 20;
+			GetComponent<Rigidbody>().drag = 20;
 
 			Vector3 temp = new Vector3();
 			temp.x = Input.GetAxis ("RightStickX");
@@ -234,13 +234,13 @@ public class playerMovement : MonoBehaviour {
 			targetLight.intensity = 3.3f;
 		}
 
-		volume = rigidbody.velocity.magnitude ;
+		volume = GetComponent<Rigidbody>().velocity.magnitude ;
 		volume /= speed;
 		//Debug.Log (volume);
 		moveSound.volume = volume;
 
 
-		if (rigidbody.velocity != new Vector3 (0, 0, 0)) {
+		if (GetComponent<Rigidbody>().velocity != new Vector3 (0, 0, 0)) {
 			moveSound.Play();
 		}
 
@@ -270,7 +270,7 @@ public class playerMovement : MonoBehaviour {
 			blockInstantTimerRunning = true;
 			blockPullSound.Play();
 			BlockS.ChangeParticlesSize(0.08f);
-			blockInstance.renderer.enabled = false;
+			blockInstance.GetComponent<Renderer>().enabled = false;
 			bBoxScript.CurrentBlockofEvaluation = blockInstance;
 			//blockInstance.collider.isTrigger = true;
 
@@ -299,11 +299,11 @@ public class playerMovement : MonoBehaviour {
 			blockInstance.transform.localScale = new Vector3( scaler*0.3f,scaler*2.0f, 1f);
 
 			if(!bBoxScript.CanPlaceBlock()){
-				blockInstance.renderer.material.color = Color.red;
+				blockInstance.GetComponent<Renderer>().material.color = Color.red;
 				BlockS.ChangeParticlesColor(Color.red);
 			}
 			else{
-				blockInstance.renderer.material.color = Color.white;
+				blockInstance.GetComponent<Renderer>().material.color = Color.white;
 				BlockS.ChangeParticlesColor(Color.white);
 			}
 
@@ -395,13 +395,13 @@ public class playerMovement : MonoBehaviour {
 		if(rediScript.CanRedirect()){
 			redirectLight.intensity = 2;
 			foreach(GameObject g in redirectObjects){
-				g.renderer.material.color = rediColor;
+				g.GetComponent<Renderer>().material.color = rediColor;
 			}
 		}
 		else{
 			redirectLight.intensity = 0;
 			foreach(GameObject g in redirectObjects){
-				g.renderer.material.color = Color.black;
+				g.GetComponent<Renderer>().material.color = Color.black;
 			}
 		}
 
@@ -448,9 +448,9 @@ public class playerMovement : MonoBehaviour {
 		bulletTemp.z = -1;
 
 		bullet.transform.position = bulletTemp;
-		bullet.rigidbody.velocity = vel*bulletSpeed;
+		bullet.GetComponent<Rigidbody>().velocity = vel*bulletSpeed;
 
-		transform.rigidbody.AddForce((-vel)*1000f);
+		transform.GetComponent<Rigidbody>().AddForce((-vel)*1000f);
 		shootSound.Play ();
 
 		shootEffect.transform.rotation = targetLight.transform.rotation;
@@ -551,8 +551,8 @@ public class playerMovement : MonoBehaviour {
 		foreach (GameObject g in bulletList) { // I figured out the bug. It's because a bullet can be deleted during one of these frames. AH I KNOW. make boolean. if this is true, wait a few frames with destroy bullet. :)
 			if(g != null){
 				Vector3 vectorToTarget = targetPos - g.transform.position;
-				g.rigidbody.velocity = vectorToTarget;
-				g.rigidbody.velocity.Normalize();
+				g.GetComponent<Rigidbody>().velocity = vectorToTarget;
+				g.GetComponent<Rigidbody>().velocity.Normalize();
 				i--;
 
 				if(i == 0){
