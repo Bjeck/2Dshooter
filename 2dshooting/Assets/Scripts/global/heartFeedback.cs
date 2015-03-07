@@ -19,14 +19,17 @@ public class heartFeedback : MonoBehaviour {
 
 	void OnCollisionEnter(Collision c){
 		if(c.gameObject.tag == "ball"){
-			heartFeedbackSys.Stop ();
+			if(c.gameObject.GetComponent<bulletScript>().canHitHeart){
+				heartFeedbackSys.Stop ();
 
-			int rand = Random.Range(0,1);
-			heartHitSounds[rand].Play ();
+				if(!GlobalSingleton.instance.inMenu){
+					int rand = Random.Range(0,1);
+					heartHitSounds[rand].Play();
+				}
 
+				StartCoroutine (WaitForStart ());
+			}
 
-
-			StartCoroutine (WaitForStart ());
 		}
 	}
 

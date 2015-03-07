@@ -46,7 +46,7 @@ public class MainMenu : MonoBehaviour {
 				g.SetActive(false);
 				//g.GetComponent<TextMesh>().text = "";
 			}
-			menuText.text = "This is the Menu. Press Space to Start";
+			menuText.text = "This is the Menu";
 
 		}
 		else{

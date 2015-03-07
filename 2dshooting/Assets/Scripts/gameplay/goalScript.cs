@@ -16,6 +16,9 @@ public class goalScript : MonoBehaviour {
 	public ParticleSystem goalSystem;
 	public ParticleSystem scoreParticles;
 
+	public GameObject redirectObj;
+	public GameObject rediChargeParticleObject;
+	ParticleSystem rediChargeParticles;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +26,10 @@ public class goalScript : MonoBehaviour {
 		sS = singleton.GetComponent<GlobalSingleton> ();
 
 		scoreText = GetComponentInChildren<TextMesh> ();
+		redirectObj = GameObject.Find ("redirectParticles");
+
+		rediChargeParticleObject = GameObject.FindGameObjectWithTag ("rediChargeParticles");
+		rediChargeParticles = rediChargeParticleObject.GetComponent<ParticleSystem> ();
 
 		if (!GlobalSingleton.instance.inMenu) {
 			scoreParticles.loop = true;	
@@ -73,6 +80,10 @@ public class goalScript : MonoBehaviour {
 
 			ScoreSound.PlayOneShot (scoreSoundClip);
 			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.6f,0.18f,0.06f));
+
+
+			redirectObj.GetComponent<redirect>().RedirectCounter++;
+			rediChargeParticles.Play ();
 
 		}
 	}

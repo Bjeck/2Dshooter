@@ -66,23 +66,31 @@ public class timerScript : MonoBehaviour {
 
 		}
 
+		if (bulletCountdown > 40f) {
+			bulletCountdown = 40f;
+		}
+
 		if (bulletCountdown <= 0) { //if time over: LOSE 4 LIVES
 
-			heartScr.LoseLife(4); // Lose this many lives.
-			bulletCountdown = 20;
+			//heartScr.LoseLife(4); // Lose this many lives.
+			bulletCountdown = 0;
 
-			timerZeroSound.Play();
+		//	timerZeroSound.Play();
 
 			//endingObject.GetComponent<Ending>().EndGame();
 			//bulletCountdown = 10;
 		}
 
+
+
 		if (bulletCountdown < 10f) { //changing position depending on the number to the left of the comma.
 			transform.position = new Vector3(-1.35f,transform.position.y,transform.position.z);
+
 			
 		}
 		else{
 			transform.position = new Vector3(-2.43f,transform.position.y,transform.position.z);
+
 		}
 
 		//START WARNING SYSTEM

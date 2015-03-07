@@ -13,7 +13,7 @@ public class playerMovement : MonoBehaviour {
 
 	//moving
 	Vector3 mover;
-	float speed = 24;
+	public float speed = 24;
 	bool lockPosition = false;
 
 	AudioSource moveSound;
@@ -164,6 +164,19 @@ public class playerMovement : MonoBehaviour {
 		}
 
 // ------------------------------------------------------------------------------------------------------------------------------------- MOVEMENT
+
+		if (!GlobalSingleton.instance.inMenu) {
+			if (!repellerActive) {
+				speed = timerS.bulletCountdown;
+			} else {
+				speed = timerS.bulletCountdown / 2;
+			}
+		} else {
+			speed = 24f;
+		}
+
+
+
 
 		if(!lockPosition){
 			GetComponent<Rigidbody>().drag = 0;
@@ -366,7 +379,6 @@ public class playerMovement : MonoBehaviour {
 			Vector3 tPos2 = transform.position;
 			tPos2.z = -1;
 			repeller.transform.position = tPos2;
-			speed = 12;
 	//		repellerCoolDown -= Time.deltaTime;
 			if(repellerCoolDown <= 0){
 				DeSpawnRepeller();
@@ -522,7 +534,7 @@ public class playerMovement : MonoBehaviour {
 		//repellerSound.pitch = 0.8f;
 		//repellerSound.PlayOneShot(repellerSoundClip);
 		repellerActive = false;
-		speed = 24;
+		//speed = 24;
 		trail.enabled = true;
 
 		StartCoroutine(DestroyRepeller());

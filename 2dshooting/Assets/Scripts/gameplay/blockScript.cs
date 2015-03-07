@@ -74,14 +74,17 @@ public class blockScript : MonoBehaviour {
 			blockHitSound.Play ();
 			//if(!playerS.canRedirect){ //redirect charge up
 				//playerS.Redirecttimer--;
-			redirectObj.GetComponent<redirect>().RedirectCounter++;
+		
+
+		//	redirectObj.GetComponent<redirect>().RedirectCounter++;
+		//	rediChargeParticles.Play ();
+
 			//}
 
 			durability--;
 			durColorVal = (float)durability/maxDurability;
 			GetComponent<Renderer>().material.color = new Color(durColorVal,durColorVal,durColorVal);
 			blockParticles.startColor = new Color(durColorVal,durColorVal,durColorVal);
-			rediChargeParticles.Play ();
 
 		}
 		if (c.gameObject.name == "blockBox") {
