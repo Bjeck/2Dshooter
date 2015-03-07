@@ -57,20 +57,20 @@ public class Sphere : MonoBehaviour {
 		while (true) {
 			
 			if (shouldLerpToOrigin) {
-				rigidbody.isKinematic = true;
+				GetComponent<Rigidbody>().isKinematic = true;
 				yield return StartCoroutine(LerpToStartPosition());
 				shouldLerpToOrigin = false;
-				rigidbody.isKinematic = false;
+				GetComponent<Rigidbody>().isKinematic = false;
 			}
 			
 			UpdateGrabSphere();
 			
 			if (isHeld) {
 				
-				float depth = thisTransform.position.z - Camera.mainCamera.transform.position.z;
+				float depth = thisTransform.position.z - Camera.main.transform.position.z;
 				
 				// update position
-				Vector3 newWorldPoint = Camera.mainCamera.ScreenToWorldPoint(
+				Vector3 newWorldPoint = Camera.main.ScreenToWorldPoint(
 					new Vector3(Input.mousePosition.x, Input.mousePosition.y, depth));
 				
 				Debug.Log (newWorldPoint);
@@ -120,7 +120,7 @@ public class Sphere : MonoBehaviour {
 			if (Input.GetMouseButtonDown(0)) {
 		
 				Ray screenRay =
-					Camera.mainCamera.ScreenPointToRay(Input.mousePosition);
+					Camera.main.ScreenPointToRay(Input.mousePosition);
 				
 				RaycastHit hit = new RaycastHit();
 				if (Physics.Raycast(screenRay, out hit)) {
@@ -128,7 +128,7 @@ public class Sphere : MonoBehaviour {
 					if (hit.transform == thisTransform) {
 						
 						isHeld = true;							
-						rigidbody.isKinematic = true;								
+						GetComponent<Rigidbody>().isKinematic = true;								
 					}				
 				}
 			}				
@@ -179,7 +179,7 @@ public class Sphere : MonoBehaviour {
 	// -------------------------------------------------------------------------
 	IEnumerator Sling() {
 		
-		rigidbody.isKinematic = false;
+		GetComponent<Rigidbody>().isKinematic = false;
 		
 		float distanceFromStart = 0.0f;
 		float distanceToCenter;
@@ -204,7 +204,7 @@ public class Sphere : MonoBehaviour {
 			float xForce = direction.x * springDisplacement * Time.fixedDeltaTime * flingStrength;
 			float yForce = direction.y * springDisplacement * Time.fixedDeltaTime * flingStrength;
 			
-			rigidbody.AddForce(new Vector3(xForce, yForce, 0.0f));
+			GetComponent<Rigidbody>().AddForce(new Vector3(xForce, yForce, 0.0f));
 				
 		} while (distanceFromStart <= distanceToCenter);		
 	}
