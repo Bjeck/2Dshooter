@@ -153,12 +153,12 @@ public class playerMovement : MonoBehaviour {
 		if(Input.GetAxis("Trigger") > 0){
 			lockPosition = true;
 			//rigidbody.velocity = new Vector3(0,0,0);
+			//Debug.Log("LOCKED");
 		}
 		else{
 			lockPosition = false;
-
 			if(targeter != new Vector3(0,0,0)){ //&& canShoot
-		//		Debug.Log("SHOOT");
+				//Debug.Log("SHOOT");
 				Shoot(targeter);
 			}
 		}
@@ -216,12 +216,12 @@ public class playerMovement : MonoBehaviour {
 
 			temp.Normalize();
 
-			targeter = temp;
-			//if(!canShoot){
-			//	targeter = new Vector3(0,0,0);
-			//}
+			if(temp.x == 0.0 && temp.y == 0.0){
+				temp.x = Random.Range(-1f,1f);
+				temp.y = Random.Range(-1f,1f);
+			}
 
-			Debug.DrawRay(transform.position,targeter);
+			targeter = temp;
 
 		}
 
@@ -271,12 +271,11 @@ public class playerMovement : MonoBehaviour {
 			blockMan.UpdateAmountOfAvailableBlocks(1);
 		}
 
-//		Debug.Log(Input.GetAxis("Rbumper"));
 
 
 
 		//BLOCK GRABBING
-		if (Input.GetAxis ("LTrigger") > 0 && !isBlockSpawning && blockMan.GetAmountOfBlocksInMiddle() > 0) {
+		if (Input.GetAxis ("Lbumper") > 0 && !isBlockSpawning && blockMan.GetAmountOfBlocksInMiddle() > 0) {
 			isBlockSpawning = true;
 			blockInstance = blockMan.TakeBlockFromMiddle(); //(GameObject)Instantiate(Resources.Load("block",typeof(GameObject)));
 			BlockS = blockInstance.GetComponent<blockScript>();
@@ -325,7 +324,7 @@ public class playerMovement : MonoBehaviour {
 			}
 
 			//BLOCK PLACING
-			if(Input.GetAxis ("LTrigger") <= 0){
+			if(Input.GetAxis ("Lbumper") <= 0){
 				isBlockSpawning = false;
 				//Debug.Log("Tries to place block");
 
@@ -364,8 +363,12 @@ public class playerMovement : MonoBehaviour {
 		}
 
 	//------------------------------------------------ REPELLER
+		//Debug.Log (repellerActive);
+		//Debug.Log(Input.GetAxis("Lbumper"));
 
-		if (Input.GetAxis ("Lbumper") > 0 && !repellerActive) { //&& repellerCoolDown > 1   SPAWN REPELLER 
+
+
+		if (Input.GetAxis ("LTrigger") == 1 && !repellerActive) { //&& repellerCoolDown > 1   SPAWN REPELLER 
 			repellerActive = true;
 
 			//if(repellerSound.isPlaying)
@@ -385,7 +388,7 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetAxis ("Lbumper") < 1 && repellerActive) { //DESPAWN REPELLER
+		if (Input.GetAxis ("LTrigger") < 1 && repellerActive) { //DESPAWN REPELLER
 			DeSpawnRepeller();
 		}
 /*
@@ -506,6 +509,7 @@ public class playerMovement : MonoBehaviour {
 
 
 	void SpawnRepeller(){
+		Debug.Log ("SPAWNING");
 		if (repeller != null) {
 		//	Debug.Log("repeller is not null!");
 			Destroy(repeller);	
@@ -526,6 +530,7 @@ public class playerMovement : MonoBehaviour {
 	}
 
 	void DeSpawnRepeller(){
+		Debug.Log ("DESPAWNING");
 		repeller.GetComponent<Animator> ().SetBool ("spawn", false);
 		
 		//if(repellerSound.isPlaying)

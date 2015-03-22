@@ -8,7 +8,8 @@ public class bulletScript : MonoBehaviour {
 
 	public float constantSpeed = 4;
 
-
+	ParticleSystem[] partsystems;
+	ParticleSystem warningParticles;
 	ParticleSystem ownParticles;
 	Color particleColor;
 	float lerpingSpeed = 8f;
@@ -27,20 +28,41 @@ public class bulletScript : MonoBehaviour {
 	public bool canHitHeart = false;
 	float hitHeartTimer = 0.0f;
 
+	public GameObject goalObject;
+	public goalScript goalScr;
+
+	public GameObject heartObject;
+	heartScript heartScr;
+
+	public int damageCounter = 0;
+	public int damageThreshold = 8;
+	bool isScoringParticle = false;
+	float bulColor;
+
+
+
 	// Use this for initialization
 	void Start () {
 		singleton = GameObject.FindGameObjectWithTag ("DontDestroy");
 		sS = singleton.GetComponent<GlobalSingleton> ();
 
-		ownParticles = GetComponentInChildren<ParticleSystem> ();
+		partsystems = GetComponentsInChildren<ParticleSystem> ();
+		ownParticles = partsystems [0];
+		warningParticles = partsystems [1];
 		particleColor = ownParticles.startColor;
 		ownParticles.Play ();
+
 
 
 		player = GameObject.FindGameObjectWithTag ("Player");
 		trail = GetComponent<TrailRenderer> ();
 		playerS = player.GetComponent<playerMovement> ();
+		goalObject = GameObject.FindGameObjectWithTag ("goal");
+		heartObject = GameObject.FindGameObjectWithTag ("heart");
+
 		if(!sS.inMenu){
+			goalScr = goalObject.GetComponentInChildren<goalScript> ();
+			heartScr = heartObject.GetComponentInChildren<heartScript> ();
 			bulletManager = GameObject.FindGameObjectWithTag ("BulletManager");
 			timerStart = bulletManager.GetComponent<BulletManager> ().bulletTimer;
 
@@ -66,10 +88,7 @@ public class bulletScript : MonoBehaviour {
 			isPaused = false;
 		}
 
-
 		GetComponent<Rigidbody>().velocity = constantSpeed * (GetComponent<Rigidbody>().velocity.normalized);
-
-
 
 		if(!canHitHeart){
 			hitHeartTimer += Time.deltaTime;
@@ -99,9 +118,6 @@ public class bulletScript : MonoBehaviour {
 			                                                           Mathf.Lerp(ownParticles.gameObject.transform.localScale.z,0.4792895f,lerpingSpeed*Time.fixedDeltaTime));
 		}
 
-
-
-
 		if(!sS.inMenu){
 			if(timer>0){
 			//	timer -= Time.fixedDeltaTime;
@@ -121,17 +137,74 @@ public class bulletScript : MonoBehaviour {
 			trail.time = 1;
 		}
 
+
+		if (damageCounter == damageThreshold - 1) {
+			warningParticles.Play ();
+		}
+
+
+		if (damageCounter >= damageThreshold) {
+			damageCounter = 0;
+			if(!GlobalSingleton.instance.inMenu){
+				heartScr.LoseLife(1);
+			}
+
+			warningParticles.Stop();
+		}
+
+
+
+
+
 		//Debug.Log (isDamagingBullet);
 	}
 
 
 	void OnCollisionEnter(Collision col){
+		ownParticles.startColor = Color.black;
+		StartCoroutine (WaitForStart ());
+
+		if (isScoringParticle) {
+			if(col.gameObject.tag == "boundary"){
+				goalScr.Score(1);
+
+				Debug.Log("SCORE");
+
+			}
+			if(col.gameObject.tag != "repeller"){
+				isScoringParticle = false;
+
+				ownParticles.startSpeed = 0.0f;
+			}
+		}
+		else{
+			if(col.gameObject.tag == "repeller"){
+				isScoringParticle = true;
+				starting = true;
+				damageCounter = 0;
+				ownParticles.startSpeed = 1.0f;
+				if(warningParticles != null){
+					warningParticles.Stop();
+				}
+
+			}
+			else if(damageCounter == damageThreshold-1){
+				if(col.gameObject.tag == "boundary"){
+					damageCounter++;
+				}
+			}
+			else{
+				damageCounter++;
+			}
+		}
+
+
 		timer--;
 	//	renderer.material.color = Color.black;
 		if(ownParticles != null){
 
-			ownParticles.startColor = Color.black;
-			StartCoroutine (WaitForStart ());
+			//ownParticles.startColor = Color.black;
+			//StartCoroutine (WaitForStart ());
 			GameObject cPart = (GameObject)Instantiate(Resources.Load("collisionParticles",typeof(GameObject)));
 			cPart.transform.position = col.contacts[0].point;
 		}
@@ -146,7 +219,9 @@ public class bulletScript : MonoBehaviour {
 			yield return 0;
 		}
 		//renderer.material.color = particleColor;
-		ownParticles.startColor = particleColor;
+		//ownParticles.startColor = particleColor;
+		bulColor = 1-(float)damageCounter/damageThreshold;
+		ownParticles.startColor = new Color(particleColor.r,particleColor.g*bulColor,particleColor.b);
 		yield return 0;
 	}
 

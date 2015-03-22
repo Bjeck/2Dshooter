@@ -88,6 +88,14 @@ public class goalScript : MonoBehaviour {
 		}
 	}
 
+	public void Score(int count){
+		score += count;
+		ScoreSound.pitch = 1;
+		ScoreSound.pitch += Random.Range(-0.1f,0.1f);
+		ScoreSound.volume = 1;
+		ScoreSound.PlayOneShot (scoreSoundClip);
+	}
+
 
 	IEnumerator silenceSound(){
 

@@ -99,7 +99,8 @@ public class heartScript : MonoBehaviour {
 			endingObject.GetComponent<Ending>().EndGame();
 		}
 		else{
-			cam.GetComponent<camera>().PlayShake(2f);
+			cam.GetComponent<camera>().PlayShake(cam.GetComponent<camera>().magnitude);
+			//cam.GetComponent<camera>().PlayShake(2f);
 		}
 
 

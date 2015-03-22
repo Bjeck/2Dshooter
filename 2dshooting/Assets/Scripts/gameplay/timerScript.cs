@@ -55,7 +55,10 @@ public class timerScript : MonoBehaviour {
 		}
 	
 		if(!lost && !freezeTime){
-			bulletCountdown -= Time.fixedDeltaTime;
+			if(playerS.repellerActive){
+				bulletCountdown -= Time.fixedDeltaTime;
+			}
+
 			bulletCountdown = Mathf.Round (bulletCountdown * 100f) / 100f;
 
 			bulletTimerText.text = ""+bulletCountdown;
