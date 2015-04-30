@@ -75,13 +75,13 @@ public class timerScript : MonoBehaviour {
 
 		if (bulletCountdown <= 0) { //if time over: LOSE 4 LIVES
 
-			//heartScr.LoseLife(4); // Lose this many lives.
+			heartScr.LoseLife(4); // Lose this many lives.
 			bulletCountdown = 0;
 
-		//	timerZeroSound.Play();
+			timerZeroSound.Play();
 
 			//endingObject.GetComponent<Ending>().EndGame();
-			//bulletCountdown = 10;
+			bulletCountdown = 10;
 		}
 
 
@@ -98,9 +98,9 @@ public class timerScript : MonoBehaviour {
 
 		//START WARNING SYSTEM
 		if (bulletCountdown < 6f){ //&& !warningSystem.isPlaying) {
-			//giantParticle.instance.ChangeBackgroundColor(new Color(0.9f,0.0f,0f,0.2f));
-			//giantParticle.instance.globalBackgroundParticles.gravityModifier = 4f;
-			//warningSystem.Play ();
+			giantParticle.instance.ChangeBackgroundColor(new Color(0.9f,0.0f,0f,0.2f));
+			giantParticle.instance.globalBackgroundParticles.gravityModifier = 4f;
+			warningSystem.Play ();
 			warningSystem.startSize = 0;
 			warningSystem.startSpeed = 5f;
 

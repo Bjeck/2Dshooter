@@ -13,7 +13,8 @@ public class playerMovement : MonoBehaviour {
 
 	//moving
 	Vector3 mover;
-	public float speed = 24;
+	float speed = 24;
+	public float moveSpeed = 24f;
 	bool lockPosition = false;
 
 	AudioSource moveSound;
@@ -164,7 +165,7 @@ public class playerMovement : MonoBehaviour {
 		}
 
 // ------------------------------------------------------------------------------------------------------------------------------------- MOVEMENT
-
+		/*
 		if (!GlobalSingleton.instance.inMenu) {
 			if (!repellerActive) {
 				speed = timerS.bulletCountdown;
@@ -173,6 +174,12 @@ public class playerMovement : MonoBehaviour {
 			}
 		} else {
 			speed = 24f;
+		}
+		*/
+		if (repellerActive) {
+			speed = moveSpeed/2;		
+		}else{
+			speed = moveSpeed;
 		}
 
 

@@ -39,6 +39,8 @@ public class bulletScript : MonoBehaviour {
 	bool isScoringParticle = false;
 	float bulColor;
 
+	public LayerMask pointZoneLayerMask;
+
 
 
 	// Use this for initialization
@@ -51,8 +53,6 @@ public class bulletScript : MonoBehaviour {
 		warningParticles = partsystems [1];
 		particleColor = ownParticles.startColor;
 		ownParticles.Play ();
-
-
 
 		player = GameObject.FindGameObjectWithTag ("Player");
 		trail = GetComponent<TrailRenderer> ();
@@ -161,14 +161,23 @@ public class bulletScript : MonoBehaviour {
 
 
 	void OnCollisionEnter(Collision col){
-		ownParticles.startColor = Color.black;
-		StartCoroutine (WaitForStart ());
+		if (ownParticles != null) {
+			ownParticles.startColor = Color.black;
+			StartCoroutine (WaitForStart ());
+		}
 
 		if (isScoringParticle) {
 			if(col.gameObject.tag == "boundary"){
-				goalScr.Score(1);
 
-				Debug.Log("SCORE");
+				RaycastHit hit;
+				Debug.Log("CHECKING SCORE");
+				Debug.DrawRay(this.transform.position,Vector3.forward,Color.white,2f);
+				if(Physics.Raycast(this.transform.position,Vector3.forward,out hit,5f,pointZoneLayerMask.value)){
+					Debug.Log(hit.collider.gameObject.name);
+					goalScr.Score(1);
+					
+					Debug.Log("SCORE");
+				}
 
 			}
 			if(col.gameObject.tag != "repeller"){
