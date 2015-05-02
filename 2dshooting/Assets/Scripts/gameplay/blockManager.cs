@@ -44,7 +44,7 @@ public class blockManager : MonoBehaviour {
 
 				//spawns the right amount of blocks in the beginning.
 				for(int j = 0;j<blocksAvailable;j++){
-					Debug.Log("PLACING BLOCKS IN THE BEGINNING");
+					//Debug.Log("PLACING BLOCKS IN THE BEGINNING");
 					blocksInMiddle.Add((GameObject)Instantiate(Resources.Load("block",typeof(GameObject))));
 				}
 				PlaceAllBlocks();

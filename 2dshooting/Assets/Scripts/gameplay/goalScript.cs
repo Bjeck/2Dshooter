@@ -63,30 +63,14 @@ public class goalScript : MonoBehaviour {
 	}
 
 
-	void OnCollisionEnter(Collision c){
+/*	void OnCollisionEnter(Collision c){
 		if (c.gameObject.tag == "ball") {
-			score++;
-			ScoreSound.pitch = 1;
-			ScoreSound.pitch += Random.Range(-0.1f,0.1f);
-			//if(ScoreSound.pitch < 0.9f)
-			//	ScoreSound.pitch = 0.9f;
-			//if(ScoreSound.pitch > 1.1f)
-			//	ScoreSound.pitch = 1.1f;
 
-			//if(!ScoreSound.isPlaying)
-			//	StartCoroutine(silenceSound());
+			//Score (1);
 
-			ScoreSound.volume = 1;
-
-			ScoreSound.PlayOneShot (scoreSoundClip);
-			giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.6f,0.18f,0.06f));
-
-
-			redirectObj.GetComponent<redirect>().RedirectCounter++;
-			rediChargeParticles.Play ();
 
 		}
-	}
+	}*/
 
 	public void Score(int count){
 		score += count;
@@ -94,6 +78,11 @@ public class goalScript : MonoBehaviour {
 		ScoreSound.pitch += Random.Range(-0.1f,0.1f);
 		ScoreSound.volume = 1;
 		ScoreSound.PlayOneShot (scoreSoundClip);
+		giantParticle.instance.ChangeBackgroundColor(new Color(0.65f,0.6f,0.18f,0.06f));
+		redirectObj.GetComponent<redirect>().RedirectCounter++;
+		rediChargeParticles.Play ();
+
+
 	}
 
 

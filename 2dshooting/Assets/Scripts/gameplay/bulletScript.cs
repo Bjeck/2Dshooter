@@ -163,6 +163,7 @@ public class bulletScript : MonoBehaviour {
 	void OnCollisionEnter(Collision col){
 		if (ownParticles != null) {
 			ownParticles.startColor = Color.black;
+<<<<<<< Updated upstream
 			StartCoroutine (WaitForStart ());
 		}
 
@@ -179,6 +180,18 @@ public class bulletScript : MonoBehaviour {
 					Debug.Log("SCORE");
 				}
 
+=======
+		}
+
+		StartCoroutine (WaitForStart ());
+
+		if (isScoringParticle) {
+			if(col.gameObject.tag == "boundary"){
+				goalScr.Score(1);
+			}
+			else if(col.gameObject.tag == "goal"){
+				goalScr.Score(5);
+>>>>>>> Stashed changes
 			}
 			if(col.gameObject.tag != "repeller"){
 				isScoringParticle = false;

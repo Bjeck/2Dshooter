@@ -434,7 +434,7 @@ public class playerMovement : MonoBehaviour {
 				if(!redButtonDown) {
 					redButtonDown = true;
 					camScript.SubtractFromIntensity(1f);
-					StartCoroutine(Redirect(goal.transform.position));	
+					StartCoroutine(Redirect(transform.position));	
 				}
 			}
 			else{
@@ -516,7 +516,7 @@ public class playerMovement : MonoBehaviour {
 
 
 	void SpawnRepeller(){
-		Debug.Log ("SPAWNING");
+		//Debug.Log ("SPAWNING");
 		if (repeller != null) {
 		//	Debug.Log("repeller is not null!");
 			Destroy(repeller);	
@@ -537,7 +537,7 @@ public class playerMovement : MonoBehaviour {
 	}
 
 	void DeSpawnRepeller(){
-		Debug.Log ("DESPAWNING");
+		//Debug.Log ("DESPAWNING");
 		repeller.GetComponent<Animator> ().SetBool ("spawn", false);
 		
 		//if(repellerSound.isPlaying)
