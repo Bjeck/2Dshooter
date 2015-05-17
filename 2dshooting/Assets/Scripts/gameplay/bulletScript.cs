@@ -36,7 +36,7 @@ public class bulletScript : MonoBehaviour {
 
 	public int damageCounter = 0;
 	public int damageThreshold = 8;
-	bool isScoringParticle = false;
+	bool canScoreParticle = false;
 	float bulColor;
 
 	public LayerMask pointZoneLayerMask;
@@ -138,6 +138,18 @@ public class bulletScript : MonoBehaviour {
 		}
 
 
+		if (canScoreParticle) {
+			RaycastHit hit;
+			if(Physics.Raycast(this.transform.position,Vector3.forward,out hit,5f,pointZoneLayerMask.value)){
+				canScoreParticle = false;
+				goalScr.Score(1);
+				starting = true;
+				ownParticles.startSpeed = 0.0f;
+				Debug.Log("SCORE");
+			}
+		}
+
+
 		if (damageCounter == damageThreshold - 1) {
 			warningParticles.Play ();
 		}
@@ -163,11 +175,10 @@ public class bulletScript : MonoBehaviour {
 	void OnCollisionEnter(Collision col){
 		if (ownParticles != null) {
 			ownParticles.startColor = Color.black;
-<<<<<<< Updated upstream
 			StartCoroutine (WaitForStart ());
 		}
 
-		if (isScoringParticle) {
+		if (canScoreParticle) {
 			if(col.gameObject.tag == "boundary"){
 
 				RaycastHit hit;
@@ -180,31 +191,21 @@ public class bulletScript : MonoBehaviour {
 					Debug.Log("SCORE");
 				}
 
-=======
-		}
-
-		StartCoroutine (WaitForStart ());
-
-		if (isScoringParticle) {
-			if(col.gameObject.tag == "boundary"){
-				goalScr.Score(1);
-			}
-			else if(col.gameObject.tag == "goal"){
-				goalScr.Score(5);
->>>>>>> Stashed changes
 			}
 			if(col.gameObject.tag != "repeller"){
-				isScoringParticle = false;
+				canScoreParticle = false;
 
 				ownParticles.startSpeed = 0.0f;
 			}
 		}
 		else{
-			if(col.gameObject.tag == "repeller"){
-				isScoringParticle = true;
+			if(col.gameObject.tag == "repeller" || col.gameObject.tag == "block"){
+				canScoreParticle = true;
 				starting = true;
 				damageCounter = 0;
-				ownParticles.startSpeed = 1.0f;
+				if(ownParticles != null){
+					ownParticles.startSpeed = 1.0f;
+				}
 				if(warningParticles != null){
 					warningParticles.Stop();
 				}

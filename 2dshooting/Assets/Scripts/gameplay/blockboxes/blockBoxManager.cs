@@ -27,7 +27,7 @@ public class blockBoxManager : MonoBehaviour {
 			canPlaceBlock = true;
 		}
 		else{
-			canPlaceBlock = false;
+			canPlaceBlock = true; ///FALSE
 		}
 	}
 

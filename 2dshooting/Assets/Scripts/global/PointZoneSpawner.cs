@@ -6,7 +6,7 @@ public class PointZoneSpawner : MonoBehaviour {
 	public float PosLimit = 4f;
 
 	public float ScaleLimMin = 4f; //RELATIONSHIP: 2(Pos), 8(scalemin)     3, 6      4, 4       5, 2        6,  0   
-	float ScaleLimMax = 12f;
+	public float ScaleLimMax = 12f;
 	
 	float zVal = 0.65f;
 
@@ -87,26 +87,26 @@ public class PointZoneSpawner : MonoBehaviour {
 		switch (posChooser) {
 		case 0: // Y is negative
 			pos.x = Random.Range (-PosLimit, PosLimit);
-			pos.y = -PosLimit;
+			pos.y = Random.Range (-PosLimit, PosLimit);
 			scale.x = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.x*2)));
-			scale.y = ScaleLimMin;
+			scale.y = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.y*2)));
 			break;
 		case 1: //Y is positive
 			pos.x = Random.Range (-PosLimit, PosLimit);
-			pos.y = PosLimit;
+			pos.y = Random.Range (-PosLimit, PosLimit);
 			scale.x = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.x*2)));
-			scale.y = ScaleLimMin;
+			scale.y = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.y*2)));;
 			break;
 		case 2: //X is negative
-			pos.x = -PosLimit;
+			pos.x = Random.Range (-PosLimit, PosLimit);
 			pos.y = Random.Range (-PosLimit, PosLimit);
-			scale.x = ScaleLimMin;
+			scale.x = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.x*2)));
 			scale.y = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.y*2)));
 			break;
 		case 3: //X is positive
-			pos.x = PosLimit;
+			pos.x = Random.Range (-PosLimit, PosLimit);
 			pos.y = Random.Range (-PosLimit, PosLimit);
-			scale.x = ScaleLimMin;
+			scale.x = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.x*2)));
 			scale.y = Random.Range (ScaleLimMin,ScaleLimMax-(Mathf.Abs(pos.y*2)));
 			break;
 		}
