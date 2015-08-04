@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using XboxCtrlrInput;
 
 public class playerMovement : MonoBehaviour {
 
@@ -35,7 +36,7 @@ public class playerMovement : MonoBehaviour {
 	bool canShoot = false;
 	public AudioSource shootSound;
 	public ParticleSystem shootEffect;
-	timerScript timerS;
+	public timerScript timerS;
 	public float bulletCountdownAdder = 5;
 	//float bulletRestTimer;
 	public List<GameObject> bulletList = new List<GameObject> ();
@@ -88,8 +89,9 @@ public class playerMovement : MonoBehaviour {
 	redirect rediScript;
 
 	//Texts:
+	public int ControllerNR = 0;
+	public Vector3 StartPosition;
 
-	
 	// Use this for initialization
 	void Start () {
 
@@ -100,21 +102,17 @@ public class playerMovement : MonoBehaviour {
 		//goal = GameObject.Find ("goal");
 		goal = GameObject.FindGameObjectWithTag("goal");
 		if(!GlobalSingleton.instance.inMenu){
-			goalScr = goal.GetComponentInChildren<goalScript>();
+//			goalScr = goal.GetComponentInChildren<goalScript>();
 		}
 	
 
-		transform.position = new Vector3 (-4f, 0f, -2f);
+		transform.position = StartPosition;
 	
 //		RedirectCounter = redirectCoolCurrentGoal;
 		//targetLight = GetComponentInChildren<Light> ();
 		flashSound = targetLight.GetComponent<AudioSource> ();
 		flashOffSound = targetLight.GetComponent<AudioSource> ();
 		trail = GetComponent<TrailRenderer>();
-
-		if(!sS.inMenu){
-			timerS = GameObject.Find ("bulletTimerText").GetComponent<timerScript> ();
-		}
 
 //		Debug.Log(redirectpcttext.gameObject);
 	//	repellertext.text = "LB: Repeller";
@@ -151,7 +149,8 @@ public class playerMovement : MonoBehaviour {
 
 
 	//----------------------------------- SHOOT
-		if(Input.GetAxis("Trigger") > 0){
+
+		if(XCI.GetAxis(XboxAxis.RightTrigger,ControllerNR) > 0){
 			lockPosition = true;
 			//rigidbody.velocity = new Vector3(0,0,0);
 			//Debug.Log("LOCKED");
@@ -190,8 +189,8 @@ public class playerMovement : MonoBehaviour {
 		//	targetLight.transform.rotation = Quaternion.LookRotation( new Vector3(0,0,0));
 
 			mover = transform.GetComponent<Rigidbody>().velocity;
-			mover.x = Input.GetAxis ("Horizontal");
-			mover.y = Input.GetAxis ("Vertical");
+			mover.x = XCI.GetAxis(XboxAxis.LeftStickX,ControllerNR);
+			mover.y = XCI.GetAxis(XboxAxis.LeftStickY,ControllerNR);
 
 			Vector2 temp;
 			temp.x = mover.x;
@@ -218,8 +217,8 @@ public class playerMovement : MonoBehaviour {
 			GetComponent<Rigidbody>().drag = 20;
 
 			Vector3 temp = new Vector3();
-			temp.x = Input.GetAxis ("RightStickX");
-			temp.y = Input.GetAxis ("RightStickY");
+			temp.x = XCI.GetAxis(XboxAxis.RightStickX,ControllerNR);
+			temp.y = XCI.GetAxis(XboxAxis.RightStickY,ControllerNR);
 
 			temp.Normalize();
 
@@ -232,7 +231,7 @@ public class playerMovement : MonoBehaviour {
 
 		}
 
-		lookVector = new Vector3 (Input.GetAxis ("RightStickX"), Input.GetAxis ("RightStickY"), 0);
+		lookVector = new Vector3 ( XCI.GetAxis(XboxAxis.RightStickX,ControllerNR),  XCI.GetAxis(XboxAxis.RightStickY,ControllerNR), 0);
 
 		if(lookVector == (new Vector3(0,0,0)) || isBlockSpawning){
 			//Debug.Log("0000");
@@ -282,7 +281,7 @@ public class playerMovement : MonoBehaviour {
 
 
 		//BLOCK GRABBING
-		if (Input.GetAxis ("Lbumper") > 0 && !isBlockSpawning && blockMan.GetAmountOfBlocksInMiddle() > 0) {
+		if (XCI.GetButton(XboxButton.LeftBumper,ControllerNR) && !isBlockSpawning && blockMan.GetAmountOfBlocksInMiddle() > 0) {
 			isBlockSpawning = true;
 			blockInstance = blockMan.TakeBlockFromMiddle(); //(GameObject)Instantiate(Resources.Load("block",typeof(GameObject)));
 			BlockS = blockInstance.GetComponent<blockScript>();
@@ -298,8 +297,8 @@ public class playerMovement : MonoBehaviour {
 		//BLOCK DRAGGING
 		if(isBlockSpawning && blockInstance != null){
 			Vector3 blockTempPos = transform.position;
-			blockTempPos.x += Input.GetAxis("RightStickX");
-			blockTempPos.y += Input.GetAxis ("RightStickY");
+			blockTempPos.x +=  XCI.GetAxis(XboxAxis.RightStickX,ControllerNR);
+			blockTempPos.y +=  XCI.GetAxis(XboxAxis.RightStickY,ControllerNR);
 			blockTempPos.z = -3;
 
 			Vector3 vectorToTarget = transform.position - blockInstance.transform.position;
@@ -331,7 +330,7 @@ public class playerMovement : MonoBehaviour {
 			}
 
 			//BLOCK PLACING
-			if(Input.GetAxis ("Lbumper") <= 0){
+			if(!XCI.GetButton(XboxButton.LeftBumper,ControllerNR)){
 				isBlockSpawning = false;
 				//Debug.Log("Tries to place block");
 
@@ -347,7 +346,7 @@ public class playerMovement : MonoBehaviour {
 					return;
 				}
 
-				if(Mathf.Abs(Input.GetAxis("RightStickX"))+ Mathf.Abs(Input.GetAxis("RightStickY")) == 0){
+				if(Mathf.Abs(XCI.GetAxis(XboxAxis.RightStickX,ControllerNR))+ Mathf.Abs(XCI.GetAxis(XboxAxis.RightStickY,ControllerNR)) == 0){
 					blockMan.PlaceBlockBackInMiddle();
 					Destroy(blockInstance);
 					StartCoroutine(WaitToResetBlockBool());
@@ -374,8 +373,7 @@ public class playerMovement : MonoBehaviour {
 		//Debug.Log(Input.GetAxis("Lbumper"));
 
 
-
-		if (Input.GetAxis ("LTrigger") == 1 && !repellerActive) { //&& repellerCoolDown > 1   SPAWN REPELLER 
+		if (XCI.GetAxis(XboxAxis.LeftTrigger,ControllerNR) == 1 && !repellerActive) { //&& repellerCoolDown > 1   SPAWN REPELLER 
 			repellerActive = true;
 
 			//if(repellerSound.isPlaying)
@@ -395,7 +393,7 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetAxis ("LTrigger") < 1 && repellerActive) { //DESPAWN REPELLER
+		if (XCI.GetAxis(XboxAxis.LeftTrigger,ControllerNR) < 1 && repellerActive) { //DESPAWN REPELLER
 			DeSpawnRepeller();
 		}
 /*
@@ -414,7 +412,7 @@ public class playerMovement : MonoBehaviour {
 	// --------------------------------------------------- ReDIRECT
 
 
-		if(rediScript.CanRedirect()){
+	/*	if(rediScript.CanRedirect()){
 			redirectLight.intensity = 2;
 			foreach(GameObject g in redirectObjects){
 				g.GetComponent<Renderer>().material.color = rediColor;
@@ -429,7 +427,7 @@ public class playerMovement : MonoBehaviour {
 
 
 
-		if (Input.GetAxis ("Rbumper") > 0){ 
+		if (XCI.GetButton(XboxButton.RightBumper,ControllerNR)){ 
 			if(rediScript.CanRedirect()){
 				if(!redButtonDown) {
 					redButtonDown = true;
@@ -446,10 +444,10 @@ public class playerMovement : MonoBehaviour {
 			}
 		}
 
-		if (redButtonDown && Input.GetAxis ("Rbumper") < 1) {
+		if (redButtonDown && !XCI.GetButton(XboxButton.RightBumper,ControllerNR)) {
 			redButtonDown = false;
 		}
-
+*/
 
 	} //end update
 

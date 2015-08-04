@@ -39,7 +39,7 @@ public class heartScript : MonoBehaviour {
 
 
 		if(!sS.inMenu){
-			lifeText.text = "";
+			lifeText.text = ""+life;
 		}
 
 	}
@@ -68,7 +68,7 @@ public class heartScript : MonoBehaviour {
 				}
 				else{
 					life--;		
-					
+					lifeText.text = ""+life;
 					lifeParticles[currentlyUnlitParticles].startColor = Color.black;
 					currentlyUnlitParticles++;
 				}

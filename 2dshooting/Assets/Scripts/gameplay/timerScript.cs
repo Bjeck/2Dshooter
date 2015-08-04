@@ -75,13 +75,13 @@ public class timerScript : MonoBehaviour {
 
 		if (bulletCountdown <= 0) { //if time over: LOSE 4 LIVES
 
-			heartScr.LoseLife(4); // Lose this many lives.
-			bulletCountdown = 0;
+			//heartScr.LoseLife(4); // Lose this many lives.
 
-			timerZeroSound.Play();
+
+			//timerZeroSound.Play();
 
 			//endingObject.GetComponent<Ending>().EndGame();
-			bulletCountdown = 10;
+			bulletCountdown = 20;
 		}
 
 
