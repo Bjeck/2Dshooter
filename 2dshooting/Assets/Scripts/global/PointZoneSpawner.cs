@@ -83,7 +83,7 @@ public class PointZoneSpawner : MonoBehaviour {
 		Vector3 scale = Vector3.zero;;
 
 		int posChooser =  Random.Range (0, 4);
-		Debug.Log (posChooser);
+		//Debug.Log (posChooser);
 		switch (posChooser) {
 		case 0: // Y is negative
 			pos.x = Random.Range (-PosLimit, PosLimit);
@@ -113,7 +113,7 @@ public class PointZoneSpawner : MonoBehaviour {
 		pos.z = zVal;
 		scale.z = 1f;
 
-		Debug.Log (pos + " " + scale);
+		//Debug.Log (pos + " " + scale);
 
 		GameObject pointZoneToSpawn = (GameObject)Instantiate(Resources.Load("pointZone",typeof(GameObject)));
 		pointZoneToSpawn.transform.position = pos;

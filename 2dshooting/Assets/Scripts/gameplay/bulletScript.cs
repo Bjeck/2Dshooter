@@ -7,6 +7,9 @@ public class bulletScript : MonoBehaviour {
 	GlobalSingleton sS;
 
 	public float constantSpeed = 4;
+	public float boostSpeed = 8f;
+	float actualBoostSpeed;
+
 
 	ParticleSystem[] partsystems;
 	ParticleSystem warningParticles;
@@ -38,6 +41,7 @@ public class bulletScript : MonoBehaviour {
 	public int damageThreshold = 8;
 	bool canScoreParticle = false;
 	float bulColor;
+	public bool isBoosting = false;
 
 	public LayerMask pointZoneLayerMask;
 
@@ -88,7 +92,11 @@ public class bulletScript : MonoBehaviour {
 			isPaused = false;
 		}
 
-		GetComponent<Rigidbody>().velocity = constantSpeed * (GetComponent<Rigidbody>().velocity.normalized);
+		if (isBoosting) {
+			GetComponent<Rigidbody>().velocity = boostSpeed * (GetComponent<Rigidbody>().velocity.normalized);
+		} else {
+			GetComponent<Rigidbody>().velocity = constantSpeed * (GetComponent<Rigidbody>().velocity.normalized);
+		}
 
 		if(!canHitHeart){
 			hitHeartTimer += Time.deltaTime;
@@ -142,10 +150,10 @@ public class bulletScript : MonoBehaviour {
 			RaycastHit hit;
 			if(Physics.Raycast(this.transform.position,Vector3.forward,out hit,5f,pointZoneLayerMask.value)){
 				canScoreParticle = false;
-				goalScr.Score(1);
+			//	goalScr.Score(1);
 				starting = true;
 				ownParticles.startSpeed = 0.0f;
-				Debug.Log("SCORE");
+	//			Debug.Log("SCORE");
 			}
 		}
 
@@ -173,16 +181,38 @@ public class bulletScript : MonoBehaviour {
 
 
 	void OnCollisionEnter(Collision col){
+
 		if (ownParticles != null) {
 			ownParticles.startColor = Color.black;
 			StartCoroutine (WaitForStart ());
 		}
 
+		//BOOST
+		if(col.gameObject.tag == "repeller" && canScoreParticle){
+			if(col.gameObject == GlobalSingleton.instance.ending.player1.repeller){
+				//Debug.Log(GlobalSingleton.instance.player1.gameObject.GetComponent<Rigidbody>().velocity.magnitude);
+				if((GlobalSingleton.instance.ending.player1.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 10f)){
+					isBoosting = true;
+					actualBoostSpeed = (Vector3.Dot(GlobalSingleton.instance.ending.player1.gameObject.GetComponent<Rigidbody>().velocity.normalized, GetComponent<Rigidbody>().velocity.normalized)+1) * boostSpeed;
+					StartCoroutine(TimeFreeze());
+				}
+			}
+			else if(col.gameObject == GlobalSingleton.instance.ending.player2.repeller){
+				//Debug.Log(GlobalSingleton.instance.player2.gameObject.GetComponent<Rigidbody>().velocity.magnitude);
+				if((GlobalSingleton.instance.ending.player2.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 10f)){
+					isBoosting = true;
+					actualBoostSpeed = (Vector3.Dot(GlobalSingleton.instance.ending.player2.gameObject.GetComponent<Rigidbody>().velocity.normalized, GetComponent<Rigidbody>().velocity.normalized)+1) * boostSpeed;
+					StartCoroutine(TimeFreeze());
+				}
+			}
+		}
+
+
 		if (canScoreParticle) {
 			if(col.gameObject.tag == "boundary"){
-
+				isBoosting = false;
 				RaycastHit hit;
-				Debug.Log("CHECKING SCORE");
+	//			Debug.Log("CHECKING SCORE");
 				Debug.DrawRay(this.transform.position,Vector3.forward,Color.white,2f);
 				if(Physics.Raycast(this.transform.position,Vector3.forward,out hit,5f,pointZoneLayerMask.value)){
 					Debug.Log(hit.collider.gameObject.name);
@@ -193,6 +223,7 @@ public class bulletScript : MonoBehaviour {
 
 			}
 			if(col.gameObject.tag != "repeller"){
+				isBoosting = false;
 				canScoreParticle = false;
 
 				ownParticles.startSpeed = 0.0f;
@@ -210,6 +241,8 @@ public class bulletScript : MonoBehaviour {
 					warningParticles.Stop();
 				}
 
+
+
 			}
 			else if(damageCounter == damageThreshold-1){
 				if(col.gameObject.tag == "boundary"){
@@ -217,6 +250,7 @@ public class bulletScript : MonoBehaviour {
 				}
 			}
 			else{
+				isBoosting = false;
 				damageCounter++;
 			}
 		}
@@ -245,6 +279,17 @@ public class bulletScript : MonoBehaviour {
 		//ownParticles.startColor = particleColor;
 		bulColor = 1-(float)damageCounter/damageThreshold;
 		ownParticles.startColor = new Color(particleColor.r,particleColor.g*bulColor,particleColor.b);
+		yield return 0;
+	}
+
+	public IEnumerator TimeFreeze(){
+		GlobalSingleton.instance.FreezeGame ();
+		float t = 0;
+		while (t<0.1) {
+			t += Time.deltaTime;
+			yield return 0;
+		}
+		GlobalSingleton.instance.UnFreezeGame ();
 		yield return 0;
 	}
 

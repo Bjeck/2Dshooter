@@ -64,7 +64,7 @@ public class playerMovement : MonoBehaviour {
 	public AudioSource blockErrorSound;
 
 	//Repeller
-	GameObject repeller;
+	public GameObject repeller;
 	public bool repellerActive = false;
 	public AudioSource repellerSound;
 	public AudioClip repellerSoundClip;

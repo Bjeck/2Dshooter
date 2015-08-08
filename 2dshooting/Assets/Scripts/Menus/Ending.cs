@@ -24,7 +24,8 @@ public class Ending : MonoBehaviour {
 	public AudioSource unPauseSound;
 	public TextMesh menuInfoText;
 
-
+	public playerMovement player1;
+	public playerMovement player2;
 
 
 	// Use this for initialization
@@ -40,6 +41,7 @@ public class Ending : MonoBehaviour {
 				t.text = "";
 			}		
 		}
+		GlobalSingleton.instance.ending = this;
 	}
 	
 	// Update is called once per frame

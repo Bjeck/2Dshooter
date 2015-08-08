@@ -15,6 +15,9 @@ public class GlobalSingleton : MonoBehaviour {
 	public bool hasEnded = false;
 
 
+	public Ending ending;
+	public AudioSource timefreezeSound;
+
 
 	private static GlobalSingleton _instance;
 
@@ -46,11 +49,13 @@ public class GlobalSingleton : MonoBehaviour {
 
 
 	void Start(){
-		Application.targetFrameRate = 60;
+		//Application.targetFrameRate = 60;
 		if (!isDoingTutorial) {
 			hasCompletedTutorialNow = true;
 			hasCompletedTutorialGeneral = true;
 		}
+
+
 	}
 
 	void Update(){
@@ -63,11 +68,22 @@ public class GlobalSingleton : MonoBehaviour {
 
 
 	public void ResetReferences(){
-
 	}
 
 	public void TutorialInit(){
 
 	}
+
+	public void FreezeGame(){
+		timefreezeSound.Play ();
+		GlobalSingleton.instance.isPaused = true;
+		giantParticle.instance.SetPauseParticles (true);
+	}
+	
+	public void UnFreezeGame(){
+		GlobalSingleton.instance.isPaused = false;
+		giantParticle.instance.SetPauseParticles (false);
+	}
+
 
 }
