@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using XboxCtrlrInput;
 
 public class Ending : MonoBehaviour {
 
@@ -90,7 +91,7 @@ public class Ending : MonoBehaviour {
 				UIObjects.SetActive(true);	
 			}
 				
-			if(Input.GetAxis("Start") > 0){
+			if(XCI.GetButton(XboxButton.Start) ){
 				UnPauseGame();
 				if(GlobalSingleton.instance.isDoingTutorial){
 					UIObjects.SetActive(false);	
@@ -99,12 +100,12 @@ public class Ending : MonoBehaviour {
 			}
 		}
 		else{
-			if(Input.GetAxis("Start") > 0 && !startButtonDown){
+			if(XCI.GetButton(XboxButton.Start) && !startButtonDown){
 				PauseGame();
 				startButtonDown = true;
 			}
 		}
-		if (startButtonDown && Input.GetAxis ("Start") <= 0) {
+		if (startButtonDown && !XCI.GetButton(XboxButton.Start)) {
 			startButtonDown = false;		
 		}
 

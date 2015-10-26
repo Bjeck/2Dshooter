@@ -67,17 +67,10 @@ public class heartScript : MonoBehaviour {
 					// DO NOTHING OTHER THAN FEEDBACK
 				}
 				else{
-					life--;		
-					
-					lifeParticles[currentlyUnlitParticles].startColor = Color.black;
-					currentlyUnlitParticles++;
+					LoseLife(1);
+
 				}
 				//cam.GetComponent<camera>().StartCameraShake(1);
-				cam.GetComponent<camera>().PlayShake(cam.GetComponent<camera>().magnitude);
-				
-				if(life <= 0 && GlobalSingleton.instance.isPlayingForReal){
-					endingObject.GetComponent<Ending>().EndGame();
-				}
 			}
 		}
 	}
@@ -99,7 +92,7 @@ public class heartScript : MonoBehaviour {
 			endingObject.GetComponent<Ending>().EndGame();
 		}
 		else{
-			cam.GetComponent<camera>().PlayShake(2f);
+			cam.GetComponent<camera>().PlayShake(amount*cam.GetComponent<camera>().magnitude);
 		}
 
 

@@ -74,7 +74,7 @@ public class blockManager : MonoBehaviour {
 		blockSlotY = -blockSlotX;
 		currentBlockToTake++;
 
-		return new Vector3(blockSlotX, blockSlotY, 0);
+		return new Vector3(blockSlotX, blockSlotY, 0.2f);
 	}
 	
 
